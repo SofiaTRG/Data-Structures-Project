@@ -7,8 +7,8 @@ public class Runner extends Node {
     private TimeTree Runs=null;
     private int NUMRuns;
 
-    public Runner(RunnerID runnerID1){
-        runnerID=runnerID1;
+    public Runner(RunnerID runnerID){
+        runnerID=runnerID;
         AvgTime=Float.MAX_VALUE;
     }
 
