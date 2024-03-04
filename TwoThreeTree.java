@@ -1,7 +1,7 @@
 public class TwoThreeTree<T> {
 
     // needed to change to the classic ver.
-    //
+    // also needed a function that search of a node and if founded returns true
     //
     private Node<T> root;
 
