@@ -1,53 +1,103 @@
 public class Node<T> {
-    private Node father;
-    private Node left;
-    private Node middle;
-    private Node right;
+    Node<T> parent;
+    Node<T> leftChild;
+    Node<T> middleChild;
+    Node<T> rightChild;
+    int key;
+    //second key is float
+    int secondKey;
+    T value; // Runner or Run
 
-    public void Node() {
-        setFather(null);
-        setLeft(null);
-        setMiddle(null);
-        setRight(null);
-    }
-    public void Node(Node father, Node left, Node middle, Node right) {
-        setFather(father);
-        setLeft(left);
-        setMiddle(middle);
-        setRight(right);
-    }
-    public Node getFather() {
-        return father;
-    }
-
-    public int getNUMSons() {
-        if (left == null) {
-            return 0;
-        }
-        if (middle == null) {
-            return 1;
-        }
-        if (right == null) {
-            return 2;
-        } else {
-            return 3;
-        }
+    // Constructors
+    public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, Node<T> rightChild, T value, int key, int secondKey) {
+        this.parent = parent;
+        this.leftChild = leftChild;
+        this.middleChild = middleChild;
+        this.rightChild = rightChild; //In TwoThreeTree always null
+        this.value = value;
+        this.key = key;
+        this.secondKey = secondKey;
     }
 
-    public void setFather(Node father) {
-        this.father=father;
+    public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, T value, int key, int secondKey) {
+        this(parent, leftChild, middleChild, null, value, key, secondKey);
     }
 
-    public void setLeft(Node left) {
-        this.left=left;
+    public Node(Node<T> parent, Node<T> leftChild, T value, int key, int secondKey) {
+        this(null, parent, leftChild, null, value, key, secondKey);
     }
 
-    public void setMiddle(Node middle) {
-        this.middle=middle;
+    public Node(Node<T> parent, T value, int key, int secondKey) {
+        this(parent, null, null, null, value, key, secondKey);
     }
 
-    public void setRight(Node right) {
-        this.right=right;
+    public Node(T value, int key, int secondKey) {
+        this(null, null, null, null, value, key, secondKey);
     }
 
+    public Node(int key, int secondKey) {
+        this(null, null, null, null, null, key, secondKey);
+    }
+
+    public Node() {
+        this(null, null, null, null, null, Integer.MIN_VALUE, Integer.MIN_VALUE);
+    }
+
+
+    // Getters and Setters
+    public Node<T> getParent() {
+        return parent;
+    }
+
+    public void setParent(Node<T> parent) {
+        this.parent = parent;
+    }
+
+    public Node<T> getLeftChild() {
+        return leftChild;
+    }
+
+    public void setLeftChild(Node<T> leftChild) {
+        this.leftChild = leftChild;
+    }
+
+    public Node<T> getMiddleChild() {
+        return middleChild;
+    }
+
+    public void setMiddleChild(Node<T> middleChild) {
+        this.middleChild = middleChild;
+    }
+
+    public Node<T> getRightChild() {
+        return rightChild;
+    }
+
+    public void setRightChild(Node<T> rightChild) {
+        this.rightChild = rightChild;
+    }
+
+    public int getKey() {
+        return this.key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
+    }
+
+    public int getSecondKey() {
+        return this.secondKey;
+    }
+
+    public void setSecondKey(int key) {
+        this.secondKey = key;
+    }
+
+    public T getValue() {
+        return this.value;
+    }
+
+    public void setValue(T key) {
+        this.value = key;
+    }
 }
