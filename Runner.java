@@ -40,9 +40,10 @@ public class Runner extends Node {
         return ((PAVRTime * NUMRuns) + time) / (NUMRuns + 1);
     }
 
-    public void removeRun(float time){//סיבוכיות Log(m)
-        if (Runs.Search(time)){
-            Runs.Delete(time);
+    //
+    public void removeRun(Run run){//סיבוכיות Log(m)
+        if (Runs.Search(run.getTime())){
+            Runs.Delete(run.getTime());
             AvgTime = calculateAverageAfterDelete(AvgTime, NUMRuns, time);
         }else
             throw new IllegalArgumentException("WE DONT HAVE THIS RUN IN THE DATE BASE");

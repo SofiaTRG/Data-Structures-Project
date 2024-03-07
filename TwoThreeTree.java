@@ -6,6 +6,8 @@ public class TwoThreeTree<T> {
      * we assume there are no two identical keys since the TwoThreeTree will be used with IDs which are unique
      * @param root
      */
+    // for min, avg and time tree can be duplicates
+    // minmax is key?
     public TwoThreeTree(Node<T> root,boolean minmax){
         this.root = root;
         if(minmax) {
@@ -25,7 +27,6 @@ public class TwoThreeTree<T> {
         return this.root;
     }
 
-
     public boolean isEmpty(){
         if(this.root.leftChild.getKey() == Integer.MIN_VALUE &&
                 this.root.middleChild.getKey() == Integer.MAX_VALUE){return true;}
@@ -36,6 +37,7 @@ public class TwoThreeTree<T> {
      * update the key of current parent to be the max key of his children
      * @param parent
      */
+    // make a same function to min key
     private void UpdateKey(Node<T> parent){
         if (parent.middleChild == null) {
             parent.key = parent.leftChild.key;
@@ -240,7 +242,7 @@ public class TwoThreeTree<T> {
      * working under the assumption that only leaves are getting deleted
      * @param node
      */
-    public void Delete(Node<T> node, boolean whichKey){
+    public void Delete(Node<T> node){
         if(node == this.root){this.root=null; return;} // Create an empty tree
         Node<T> parent = node.parent;
         if(parent.rightChild != null) {

@@ -3,7 +3,7 @@ public class Node<T> {
     Node<T> leftChild;
     Node<T> middleChild;
     Node<T> rightChild;
-    int key;
+    Number key;
     //second key is float
     int secondKey;
     T value; // Runner or Run
@@ -77,7 +77,7 @@ public class Node<T> {
         this.rightChild = rightChild;
     }
 
-    public int getKey() {
+    public Number getKey() {
         return this.key;
     }
 
