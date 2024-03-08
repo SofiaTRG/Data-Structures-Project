@@ -2,13 +2,13 @@ public class Runner extends Node {
     //NEED TO FIX AFTER WE HAD THE TREE OF RUNTIME
     private RunnerID runnerID;//key for runners
     private int NumRuns;
-    private float MinTime;
     private float AvgTime;
     private TimeTree Runs=null;
     private int NUMRuns;
+    private int height;
 
     public Runner(RunnerID runnerID){
-        runnerID=runnerID;
+        this.runnerID=runnerID;
         AvgTime=Float.MAX_VALUE;
     }
 
@@ -51,6 +51,10 @@ public class Runner extends Node {
 
     private static float calculateAverageAfterDelete(float PAVRTime, int NUMRuns, float time) {
         return ((PAVRTime * NUMRuns) - time) / (NUMRuns - 1);
+    }
+
+    private setHeight(int height) {
+        this.height=height;
     }
 
 }

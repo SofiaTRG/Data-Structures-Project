@@ -3,10 +3,11 @@ public class Node<T> {
     Node<T> leftChild;
     Node<T> middleChild;
     Node<T> rightChild;
-    Number key;
+    float key;
     //second key is float
     int secondKey;
     T value; // Runner or Run
+    int height;
 
     // Constructors
     public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, Node<T> rightChild, T value, int key, int secondKey) {
@@ -41,6 +42,10 @@ public class Node<T> {
 
     public Node() {
         this(null, null, null, null, null, Integer.MIN_VALUE, Integer.MIN_VALUE);
+    }
+
+    public Node(float key) {
+        this.key = key;
     }
 
 
