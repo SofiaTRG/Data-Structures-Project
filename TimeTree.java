@@ -228,41 +228,42 @@ public class TimeTree {
 
     /**
      * working under the assumption that only leaves are getting deleted
-     * @param node
+     * @param
      */
     public void Delete(Run run){
         if(run == this.root){this.root=null; return;} // Create an empty tree
-        Node<T> parent = node.parent;
-        if(parent.rightChild != null) {
-            if (parent.leftChild == node) {
-                SetChildren(parent, parent.middleChild, parent.rightChild, null);
-            } else if (parent.middleChild == node) {
-                SetChildren(parent, parent.leftChild, parent.rightChild, null);
+
+        Run parent = run.getParent();
+        if(parent.getRightChild() != null) {
+            if (parent.getLeftChild() == run) {
+                SetChildren(parent, parent.getMiddleChild(), parent.getRightChild(), null);
+            } else if (parent.getMiddleChild() == run) {
+                SetChildren(parent, parent.getLeftChild(), parent.getRightChild(), null);
             } else {// node is right child
-                SetChildren(parent, parent.leftChild, parent.middleChild, null);
+                SetChildren(parent, parent.getLeftChild(), parent.getMiddleChild(), null);
             }
-            node.parent = null; // Deleting node from the tree, assuming node is a leaf
+            run.setParent(null); // Deleting node from the tree, assuming node is a leaf
         }
         // Can't rearrange. Need to borrow or merge. Delete node first
-        else if(parent.leftChild == node) {
-            SetChildren(parent,parent.middleChild,null,null);
+        else if(parent.getLeftChild() == run) {
+            SetChildren(parent, parent.getMiddleChild(),null,null);
         }
-        else{SetChildren(parent,parent.leftChild,null,null);}
+        else{SetChildren(parent, parent.getLeftChild(),null,null);}
 
         // Updating up the tree
         while(parent!=null) {
-            if(parent.middleChild == null) { // We need a Borrow/Merge
+            if(parent.getMiddleChild() == null) { // We need a Borrow/Merge
                 if (parent != this.root) {
                     parent = BorrowOrMerge(parent);
                 } else {
-                    this.root = parent.leftChild;
-                    this.root.parent = null;
-                    parent.leftChild = null;
+                    this.root = parent.getLeftChild();
+                    this.root.setParent(null);
+                    parent.setLeftChild(null);
                     parent = this.root;
                 }
             }
             UpdateKey(parent);
-            parent = parent.parent;
+            parent = parent.getParent();
         }
     }
 
@@ -271,122 +272,80 @@ public class TimeTree {
 
 // we get the node that we want to update
 
-    public void UpdateNode(Node<T> Node,  int key){
-        int oldKey = Node.getKey();
-        Node.setKey(key);
-        if(Node.getParent().getLeftChild() == Node){ // the node is the left child
-            if(Node.getParent().getMiddleChild() != null){
-                if(Node.getParent().getRightChild() != null){ // we have 3 children
-                    if(key > Node.getParent().getRightChild().getKey()){
-                        SetChildren(Node.getParent(), Node.getParent().getMiddleChild(), Node.getParent().getRightChild(), Node);
+    public void UpdateNode(Run run, float time){
+        float oldTime = run.getTime();
+        run.setTime(time);
+        if(run.getParent().getLeftChild() == run){ // the node is the left child
+            if(run.getParent().getMiddleChild() != null){
+                if(run.getParent().getRightChild() != null){ // we have 3 children
+                    if(time > run.getParent().getRightChild().getTime()){
+                        SetChildren(run.getParent(), run.getParent().getMiddleChild(), run.getParent().getRightChild(), run);
                     }
-                    if(key > Node.parent.getMiddleChild().getKey()) {
-                        SetChildren(Node.getParent(), Node.getParent().getMiddleChild(), Node, Node.getParent().getRightChild());
+                    if(time > run.getParent().getMiddleChild().getTime()) {
+                        SetChildren(run.getParent(), run.getParent().getMiddleChild(), run, run.getParent().getRightChild());
                     }
                 }
                 else{ // we have only the left and the middle
-                    if(key > Node.getParent().getMiddleChild().getKey()){
-                        SetChildren(Node.getParent(), Node.getParent().getMiddleChild(), Node, null);
+                    if(time > run.getParent().getMiddleChild().getTime()){
+                        SetChildren(run.getParent(), run.getParent().getMiddleChild(), run, null);
                     }
                 }
             }
         }
-        else if(Node.getParent().getMiddleChild() == Node){ // the node is the middle child
-            if(Node.getParent().getRightChild() != null){
-                if(key > Node.getParent().getRightChild().getKey()){
-                    SetChildren(Node.getParent(), Node.getParent().getLeftChild(), Node.getParent().getRightChild(), Node);
+        else if(run.getParent().getMiddleChild() == run){ // the node is the middle child
+            if(run.getParent().getRightChild() != null){
+                if(time > run.getParent().getRightChild().getTime()){
+                    SetChildren(run.getParent(), run.getParent().getLeftChild(), run.getParent().getRightChild(), run);
                 }
-                if(key < Node.getParent().getLeftChild().getKey()){
-                    SetChildren(Node.getParent(), Node, Node.getParent().getLeftChild(), Node.getParent().getRightChild());
+                if(time < run.getParent().getLeftChild().getTime()){
+                    SetChildren(run.getParent(), run, run.getParent().getLeftChild(), run.getParent().getRightChild());
                 }
             }
             else{ // only left child exists besides the node itself
-                if(key < Node.getParent().getLeftChild().getKey()){
-                    SetChildren(Node.getParent(), Node, Node.getParent().getLeftChild(), null);
+                if(time < run.getParent().getLeftChild().getTime()){
+                    SetChildren(run.getParent(), run, run.getParent().getLeftChild(), null);
                 }
             }
         }
         else{ // the node is the right child
-            if(key < oldKey){
-                if(Node.parent.getLeftChild().getKey() > key){
-                    SetChildren(Node.parent, Node, Node.getLeftChild(), Node.getMiddleChild());
+            if(time < oldTime){
+                if(run.getParent().getLeftChild().getTime() > time){
+                    SetChildren(run.getParent(), run, run.getLeftChild(), run.getMiddleChild());
                 }
-                else if(key < Node.parent.getMiddleChild().getKey()){
-                    SetChildren(Node.parent, Node.parent.getLeftChild(), Node, Node.parent.getMiddleChild());
+                else if(time < run.getParent().getMiddleChild().getTime()){
+                    SetChildren(run.getParent(), run.getParent().getLeftChild(), run, run.getParent().getMiddleChild());
                 }
             }
         }
-        UpdateKey(Node.parent); // either way we will have to update
-    } //Ilan
+        UpdateKey(run.getParent()); // either way we will have to update
+    }
 
-
-
-    public Node<T> Search(int wantedKey, Node<T> root, Boolean isKey) {
+    public Run Search(float wantedTime, Run root) {
         if (root == null) {
             return null;
-        }
-        //if(isKey){
-        if (root.getKey() == wantedKey) {
-            if (root.leftChild == null) { // it is a leaf or the root has no children
+        } if (root.getTime() == wantedTime) {
+            if (root.getLeftChild() == null) { // it is a leaf or the root has no children
                 return root; // if its a leaf with the same value it is the right one
             }
             if(root.getRightChild() != null) {
-                return Search(wantedKey,root.getRightChild(),true);
+                return Search(wantedTime,root.getRightChild());
             }
             else { // root has the max (so max == wanted.key) than we search in the middle
-                return Search(wantedKey, root.getMiddleChild(),true);
+                return Search(wantedTime, root.getMiddleChild());
             }
         } else { // right sub tree is not relevant
             if(root.getLeftChild() == null){return null;}
-            if (wantedKey <= root.getLeftChild().getKey()) {
-                return Search(wantedKey, root.getLeftChild(),true );
-            } else if(wantedKey <= root.getMiddleChild().getKey()){
-                return Search(wantedKey,root.getMiddleChild(),true);
+            if (wantedTime <= root.getLeftChild().getTime()) {
+                return Search(wantedTime, root.getLeftChild());
+            } else if(wantedTime <= root.getMiddleChild().getTime()){
+                return Search(wantedTime,root.getMiddleChild());
             }
             else{
-                return Search(wantedKey,root.getRightChild(),true);
+                return Search(wantedTime,root.getRightChild());
             }
         }
     }
 
-
-    /**
-     *
-     * @param first - points/goals
-     * @param second - id
-     * @param root
-     * @return
-     */
-    public Node<T> searchBySecond(int first, int second, Node<T> root){
-        if (root == null) {return null;}
-        if(root.getLeftChild() == null) { // Leaf
-            if(root.getSecondKey() == second){return root;}
-            return null; // there is no child that fits
-        }
-
-        // Not a leaf
-        if(root.getLeftChild().getKey() > first ||
-                (root.getLeftChild().getKey() == first && root.getLeftChild().getSecondKey() <= second)){
-            // bigger than the left - go left
-            return searchBySecond(first,second,root.getLeftChild());
-        }
-        else if(root.getRightChild() == null){ // no right child - go mid
-            return searchBySecond(first, second, root.getMiddleChild());
-        }
-        else if(root.getMiddleChild().getKey() > first ||
-                (root.getMiddleChild().getKey() == first && root.getMiddleChild().getSecondKey() <= second)){
-            // bigger than middle and smaller than left - go mid
-            return searchBySecond(first, second, root.getMiddleChild());
-        }
-        // bigger than left and mid - go right
-        return searchBySecond(first, second, root.getRightChild());
-    }
-    public void updateLeaf(int key, int seconderyKey, int newKey){
-        Node<T> found = null;//Search(this.root,seconderyKey);
-        Delete(found,true);
-        found.setKey(newKey);
-        Insert(found,true);
-    }
 
     /** Prints functions for testings **/
 
