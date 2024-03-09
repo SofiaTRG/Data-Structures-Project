@@ -1,7 +1,6 @@
 public class Runner extends Node {
     //NEED TO FIX AFTER WE HAD THE TREE OF RUNTIME
     private RunnerID runnerID;//key for runners
-    private int NumRuns;
     private float AvgTime;
     private TimeTree Runs=null;
     private int NUMRuns;
