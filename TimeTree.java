@@ -8,7 +8,10 @@ public class TimeTree {
     // Init tree
     public TimeTree() {
         this.root = new Run(null, new Run(Float.MIN_VALUE),new Run(Float.MAX_VALUE),Float.MAX_VALUE);
-        minRun = Float.MAX_VALUE;
+        this.root.getLeftChild().setParent(root);
+        this.root.getMiddleChild().setParent(root);
+
+        //minRun = Float.MAX_VALUE;
     }
 
     public Run find(float time) {
@@ -344,18 +347,17 @@ public class TimeTree {
         }
     }
 
-
     /** Prints functions for testings **/
 
-//    private void recursivePrint(Node<T> node){
-//        if (node.leftChild == null){System.out.print(node.key + " "); return;}
-//        recursivePrint(node.leftChild);
-//        if(node.middleChild !=null){recursivePrint(node.middleChild);}
-//        if(node.rightChild !=null){recursivePrint(node.rightChild);}
-//    }
-//    public void printTree(){
-//        recursivePrint(this.root);
-//    }
+    private void recursivePrint(Run node){
+        if (node.getLeftChild() == null){System.out.print(node.getTime() + " "); return;}
+        recursivePrint(node.getLeftChild());
+        if(node.getMiddleChild() !=null){recursivePrint(node.getMiddleChild());}
+        if(node.getRightChild() !=null){recursivePrint(node.getRightChild());}
+    }
+    public void printTree(){
+        recursivePrint(this.root);
+    }
 //
 //
 //
@@ -371,4 +373,32 @@ public class TimeTree {
 //        }
 //        return rebalance(root);
 //    }
+
+    // Test the 2-3 tree
+    // Test the 2-3 tree
+    public static void main(String[] args) {
+        TimeTree tree = new TimeTree();
+
+        float[] keysToInsert = {10, 5, 15, 2, 7, 12, 20};
+
+        for (float key : keysToInsert) {
+            tree.Insert(new Run(key));
+        }
+
+        System.out.println("Original Tree:");
+        tree.printTree();
+
+        // Test search
+        float searchKey = 7;
+        Run result = tree.Search(searchKey, tree.getRoot());
+
+        if (result != null) {
+            System.out.println("Key " + searchKey + " found in the tree.");
+        } else {
+            System.out.println("Key " + searchKey + " not found in the tree.");
+        }
+
+        // Additional tests and operations can be added based on your implementation
+    }
+
 }
