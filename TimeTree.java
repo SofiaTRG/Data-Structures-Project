@@ -136,28 +136,26 @@ public class TimeTree {
      * updates the keys throughout the tree after insertion
      * @param node
      */
-    public void Insert(Run node, boolean whichKey){
+    public void Insert(Run node){
         if(this.root.getLeftChild() == null) {
             this.root.setLeftChild(node);
             return;
         } //in case we have an empty tree
-        Node<T> temp = this.root;
-        while(temp.leftChild != null){ //stop when found a leaf
-            if(node.key < temp.leftChild.key ||
-                    (node.key == temp.leftChild.key && node.secondKey > temp.leftChild.secondKey)){
-                temp=temp.leftChild;
+        Run temp = this.root;
+        while(temp.getLeftChild() != null){ //stop when found a leaf
+            if(node.getTime() < temp.getLeftChild().getTime()){
+                temp= temp.getLeftChild();
             }
-            else if(node.key < temp.middleChild.key ||
-                    (node.key == temp.middleChild.key && node.secondKey > temp.middleChild.secondKey)){
-                temp=temp.middleChild;
+            else if(node.getTime() < temp.getMiddleChild().getTime()){
+                temp= temp.getMiddleChild();
             }
-            else{temp = temp.rightChild;}
+            else{temp = temp.getRightChild();}
         }
 
-        Node<T> parentSave = temp.parent;
-        Node<T> newNode = Insert_And_Split(temp,node); // found place in tree - Insert
+        Run parentSave = temp.getParent();
+        Run newNode = Insert_And_Split(temp,node); // found place in tree - Insert
         while(parentSave != this.root){ //update the keys of the tree
-            temp = parentSave.parent;
+            temp = parentSave.getParent();
             if(newNode != null){
                 newNode = Insert_And_Split(parentSave,newNode);
             }
@@ -165,7 +163,7 @@ public class TimeTree {
             parentSave = temp;
         }
         if(newNode != null){ //need a new root
-            Node<T> newRoot = new Node<T>();
+            Run newRoot = new Run();
             SetChildren(newRoot,parentSave,newNode,null);
             this.root = newRoot;
         }
@@ -349,28 +347,28 @@ public class TimeTree {
 
     /** Prints functions for testings **/
 
-    private void recursivePrint(Node<T> node){
-        if (node.leftChild == null){System.out.print(node.key + " "); return;}
-        recursivePrint(node.leftChild);
-        if(node.middleChild !=null){recursivePrint(node.middleChild);}
-        if(node.rightChild !=null){recursivePrint(node.rightChild);}
-    }
-    public void printTree(){
-        recursivePrint(this.root);
-    }
-
-
-
-    private Run insert(Run root, float key) {
-        if (root == null) {
-            return new Run(key);
-        } else if (root.key > key) {
-            root.leftChild = insert(root.leftChild, key);
-        } else if (root.key < key) {
-            root.rightChild = insert(root.rightChild, key);
-        } else if (root.key == key) {
-            root.addNum();
-        }
-        return rebalance(root);
-    }
+//    private void recursivePrint(Node<T> node){
+//        if (node.leftChild == null){System.out.print(node.key + " "); return;}
+//        recursivePrint(node.leftChild);
+//        if(node.middleChild !=null){recursivePrint(node.middleChild);}
+//        if(node.rightChild !=null){recursivePrint(node.rightChild);}
+//    }
+//    public void printTree(){
+//        recursivePrint(this.root);
+//    }
+//
+//
+//
+//    private Run insert(Run root, float key) {
+//        if (root == null) {
+//            return new Run(key);
+//        } else if (root.key > key) {
+//            root.leftChild = insert(root.leftChild, key);
+//        } else if (root.key < key) {
+//            root.rightChild = insert(root.rightChild, key);
+//        } else if (root.key == key) {
+//            root.addNum();
+//        }
+//        return rebalance(root);
+//    }
 }
