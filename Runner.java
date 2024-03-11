@@ -1,4 +1,4 @@
-public class Runner extends Node {
+public class Runner {
     //NEED TO FIX AFTER WE HAD THE TREE OF RUNTIME
     private RunnerID runnerID;//key for runners
     private float AvgTime;
@@ -8,7 +8,7 @@ public class Runner extends Node {
 
     public Runner(RunnerID runnerID){
         this.runnerID=runnerID;
-        AvgTime=Float.MAX_VALUE;
+        AvgTime=0;
     }
 
     public RunnerID getRunnerID() {
@@ -35,7 +35,7 @@ public class Runner extends Node {
         Runs.Insert(new Run(time));
     }
 
-    private static float calculateAverage(float PAVRTime, int NUMRuns, float time) {
+    private float calculateAverage(float PAVRTime, int NUMRuns, float time) {
         return ((PAVRTime * NUMRuns) + time) / (NUMRuns + 1);
     }
 
@@ -48,7 +48,7 @@ public class Runner extends Node {
             throw new IllegalArgumentException("WE DONT HAVE THIS RUN IN THE DATE BASE");
     }
 
-    private static float calculateAverageAfterDelete(float PAVRTime, int NUMRuns, float time) {
+    private float calculateAverageAfterDelete(float PAVRTime, int NUMRuns, float time) {
         return ((PAVRTime * NUMRuns) - time) / (NUMRuns - 1);
     }
 
