@@ -88,7 +88,13 @@ public class TimeTree {
             //insert second and shift others right
             SetChildren(splitNode, parent.getMiddleChild(), parent.getRightChild(),null);
             SetChildren(parent, parent.getLeftChild(),newChild,null);
-        } else{
+        } else if(newChild.getTime() < parent.getRightChild().getTime()) {
+            //if we are in the split then the parent has three children - we can check right child
+            // insert third and shift one right
+            SetChildren(splitNode, newChild, parent.getRightChild(), null);
+            SetChildren(parent, parent.getLeftChild(), parent.getMiddleChild(), null);
+
+        }else{
             // insert rightest
             SetChildren(splitNode, parent.getRightChild(),newChild,null);
             SetChildren(parent, parent.getLeftChild(), parent.getMiddleChild(),null);
@@ -156,6 +162,7 @@ public class TimeTree {
         }
 
         Run parentSave = temp.getParent();
+        //check (20, inf)
         Run newNode = Insert_And_Split(temp,node); // found place in tree - Insert
         while(parentSave != this.root){ //update the keys of the tree
             temp = parentSave.getParent();
@@ -379,11 +386,14 @@ public class TimeTree {
     public static void main(String[] args) {
         TimeTree tree = new TimeTree();
 
-        float[] keysToInsert = {10, 5, 15, 2, 7, 12, 20};
+        float[] keysToInsert = {10, 5, 15, 2, 7, 12};
 
         for (float key : keysToInsert) {
             tree.Insert(new Run(key));
         }
+
+        float a = 20;
+        tree.Insert(new Run(a));
 
         System.out.println("Original Tree:");
         tree.printTree();
