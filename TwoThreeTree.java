@@ -2,10 +2,6 @@ public class TwoThreeTree<T extends RunnerID> {
     private Node<T> root;
     boolean isBalanced;// a flag indicates the tree is 2-3 TREE
 
-    /**
-     * using the inf and -inf "towers" to save checks
-     * we assume there are no two identical keys since the TwoThreeTree will be used with IDs which are unique
-     */
 
     public TwoThreeTree() {
         isBalanced = false;
