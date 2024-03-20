@@ -1,19 +1,24 @@
+/**
+ * Represents a 2-3 tree for storing runners' times.
+ * Each node in the tree holds a minimum time value among its children.
+ */
 public class TimeTree {
     //TREE FOR EACH RUNNER FOR THEIR TIMES
     //THE KEY IS TIME
     //EACH NODE HAS THE MIN TIME OF THEIR CHILDREN
     private Run root;
-    private float minRun;
 
     // Init tree
     public TimeTree() {
+        // Initialize the root node with sentinel values
         this.root = new Run(null, new Run(Float.MIN_VALUE),new Run(Float.MAX_VALUE),Float.MAX_VALUE);
+
+        // Set parent links for left and middle children
         this.root.getLeftChild().setParent(root);
         this.root.getMiddleChild().setParent(root);
-
-        //minRun = Float.MAX_VALUE;
     }
 
+    // Find a node with a specific time value
     public Run find(float time) {
         Run current = root;
         while (current != null) {
@@ -36,16 +41,19 @@ public class TimeTree {
     }
 
     /**
-     * update the key of current parent to be the max key of his children
-     * @param parent
+     * Update the key of the current parent to be the max key of its children.
+     *
+     * @param parent The parent node to update.
      */
-    // think about away to update mintime
     private void UpdateKey(Run parent){
+        parent.setMin(parent.getLeftChild().getMin());
+        if(parent.getLeftChild().getTime()==Float.MIN_VALUE)
+            parent.setMin(parent.getMiddleChild().getTime());
         if (parent.getMiddleChild() == null) {
             parent.setTime(parent.getLeftChild().getTime());
             return;
         } //assuming we call the function not on a leaf
-        if(parent.getRightChild() == null){
+        if(parent.getRightChild() == null) {
             parent.setTime(parent.getMiddleChild().getTime());
             return;
         }
@@ -54,11 +62,13 @@ public class TimeTree {
 
 
     /**
-     * set the children received as parameters to be children of the parent(also parameter) in order
-     * @param parent
-     * @param left
-     * @param middle
-     * @param right
+     * Set the children received as parameters to be children of the parent in order.
+     * Update the parent's key after setting children.
+     *
+     * @param parent  The parent node.
+     * @param left    The left child.
+     * @param middle  The middle child.
+     * @param right   The right child.
      */
     private void SetChildren(Run parent, Run left, Run middle, Run right){
         parent.setLeftChild(left);
@@ -71,11 +81,12 @@ public class TimeTree {
     }
 
     /**
-     * activated when a split is needed.
-     * creates a new parent node and splits the children between the two parents
-     * @param parent
-     * @param newChild
-     * @return new parent node
+     * Split the parent node and create a new parent node.
+     * Adjust children accordingly.
+     *
+     * @param parent   The parent node to split.
+     * @param newChild The new child node.
+     * @return The new parent node created after the split.
      */
     private Run Split(Run parent, Run newChild){
         Run splitNode = new Run();
@@ -102,14 +113,7 @@ public class TimeTree {
         return splitNode;
     }
 
-    /// CHECK
-    /**
-     * activated after the node's destination is found
-     * inserts the node or calls split if the current parent node is full.
-     * @param parent
-     * @param newChild
-     * @return new node created after spilt or null if there was no split
-     */
+    // Insert and split nodes
     private Run Insert_And_Split(Run parent, Run newChild){
         if (parent.getParent() !=null){
             parent= parent.getParent();
@@ -127,7 +131,6 @@ public class TimeTree {
                 SetChildren(parent, parent.getLeftChild(),newChild, parent.getMiddleChild());
                 return null;
             }
-            // לבדוק את התנאי
             else {
                 SetChildren(parent, parent.getLeftChild(), parent.getMiddleChild(), newChild);
                 return null;
@@ -138,12 +141,11 @@ public class TimeTree {
     }
 
 
-    /// CHECK
     /**
-     * finds the place in the tree where node should be inserted
-     * calls Insert_And_Split() to insert the node there
-     * updates the keys throughout the tree after insertion
-     * @param node
+     * Insert a node into the tree and split if necessary.
+     * Update keys throughout the tree after insertion.
+     *
+     * @param node The node to insert.
      */
     public void Insert(Run node){
         if(this.root.getLeftChild() == null) {
@@ -162,7 +164,6 @@ public class TimeTree {
         }
 
         Run parentSave = temp.getParent();
-        //check (20, inf)
         Run newNode = Insert_And_Split(temp,node); // found place in tree - Insert
         while(parentSave != this.root){ //update the keys of the tree
             temp = parentSave.getParent();
@@ -177,7 +178,7 @@ public class TimeTree {
             SetChildren(newRoot,parentSave,newNode,null);
             this.root = newRoot;
         }
-
+        UpdateKey(root);
     }
 
 
@@ -194,7 +195,14 @@ public class TimeTree {
         return;
     }
 
-
+    /**
+     * Borrow or merge a node in the tree.
+     * This method is called when a node is removed, and the tree structure needs to be adjusted.
+     * It tries to borrow a node from siblings or merges nodes if borrowing is not possible.
+     *
+     * @param node The node to borrow from or merge with its siblings.
+     * @return The node after the borrowing or merging operation.
+     */
     private Run BorrowOrMerge(Run node){
         Run parent = node.getParent();
         if(node == parent.getLeftChild()){
@@ -235,8 +243,11 @@ public class TimeTree {
     }
 
     /**
-     * working under the assumption that only leaves are getting deleted
-     * @param
+     * Delete a node from the tree.
+     * This method removes a node from the tree structure and adjusts the tree accordingly.
+     * It also handles the cases where nodes need to be borrowed or merged after deletion.
+     *
+     * @param run The node to be deleted from the tree.
      */
     public void Delete(Run run){
         if(run == this.root){this.root=null; return;} // Create an empty tree
@@ -276,10 +287,14 @@ public class TimeTree {
     }
 
 
-
-
-// we get the node that we want to update
-
+    /**
+     * Update a node's time in the tree.
+     * This method updates the time of a specified node in the tree and adjusts the tree structure accordingly.
+     * It ensures that the tree remains in a valid state after the update operation.
+     *
+     * @param run  The node whose time needs to be updated.
+     * @param time The new time value to be assigned to the node.
+     */
     public void UpdateNode(Run run, float time){
         float oldTime = run.getTime();
         run.setTime(time);
@@ -328,6 +343,15 @@ public class TimeTree {
         UpdateKey(run.getParent()); // either way we will have to update
     }
 
+
+    /**
+     * Search for a node with the specified time value in the tree.
+     * This method recursively searches for a node with the specified time value in the tree structure.
+     *
+     * @param wantedTime The time value to search for in the tree.
+     * @param root       The root node of the subtree to search in.
+     * @return The node with the specified time value if found, otherwise null.
+     */
     public Run Search(float wantedTime, Run root) {
         if (root == null) {
             return null;
@@ -408,6 +432,7 @@ public class TimeTree {
             System.out.println("Key " + searchKey + " not found in the tree.");
         }
 
+        System.out.println(tree.root.getMin());
         // Additional tests and operations can be added based on your implementation
     }
 
