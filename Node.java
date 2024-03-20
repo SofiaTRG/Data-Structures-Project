@@ -1,16 +1,60 @@
-public class Node<T> {
+public class Node<T extends RunnerID> {
     Node<T> parent;
     Node<T> leftChild;
     Node<T> middleChild;
     Node<T> rightChild;
-    float key;
+    T key;
     //second key is float
     int secondKey;
-    T value; // Runner or Run
+    T value; // Runner or Run(???)
     int height;
+    private T FastestRunnerAvg;//pointer to the runner with the minimal avg run time
+
+    private T FastestRunnerMin;//pointer to the runner with the minimal run time
+
+    private int size;// number of children
+    private TimeTree runs;
+    private float MinimalRunTime;
+    private float AvgRunTime;
+
+    public T getFastestRunnerAvg() {
+        return FastestRunnerAvg;
+    }
+
+    public T getFastestRunnerMin() {
+        return FastestRunnerMin;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public float getMinimalRunTime() {
+        return MinimalRunTime;
+    }
+
+    public float getAvgRunTime() {
+        return AvgRunTime;
+    }
+
+    public void setFastestRunnerAvg(T fastestRunnerAvg) {
+        FastestRunnerAvg = fastestRunnerAvg;
+    }
+
+    public void setFastestRunnerMin(T fastestRunnerMin) {
+        FastestRunnerMin = fastestRunnerMin;
+    }
+
+    public void setMinimalRunTime(float minimalRunTime) {
+        MinimalRunTime = minimalRunTime;
+    }
+
+    public void setAvgRunTime(float avgRunTime) {
+        AvgRunTime = avgRunTime;
+    }
 
     // Constructors
-    public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, Node<T> rightChild, T value, int key, int secondKey) {
+    public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, Node<T> rightChild, T value, T key, int secondKey) {
         this.parent = parent;
         this.leftChild = leftChild;
         this.middleChild = middleChild;
@@ -20,31 +64,35 @@ public class Node<T> {
         this.secondKey = secondKey;
     }
 
-    public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, T value, int key, int secondKey) {
+    public TimeTree getRuns() {
+        return runs;
+    }
+
+    public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, T value, T key, int secondKey) {
         this(parent, leftChild, middleChild, null, value, key, secondKey);
     }
 
-    public Node(Node<T> parent, Node<T> leftChild, T value, int key, int secondKey) {
+    public Node(Node<T> parent, Node<T> leftChild, T value, T key, int secondKey) {
         this(null, parent, leftChild, null, value, key, secondKey);
     }
 
-    public Node(Node<T> parent, T value, int key, int secondKey) {
+    public Node(Node<T> parent, T value, T key, int secondKey) {
         this(parent, null, null, null, value, key, secondKey);
     }
 
-    public Node(T value, int key, int secondKey) {
+    public Node(T value, T key, int secondKey) {
         this(null, null, null, null, value, key, secondKey);
     }
 
-    public Node(int key, int secondKey) {
-        this(null, null, null, null, null, key, secondKey);
-    }
+    //public Node(int key, int secondKey) {
+    //    this(null, null, null, null, null, key, secondKey);
+    //}
 
     public Node() {
-        this(null, null, null, null, null, Integer.MIN_VALUE, Integer.MIN_VALUE);
+        this(null, null, null, null, null, null, Integer.MIN_VALUE);
     }
 
-    public Node(float key) {
+    public Node(T key) {
         this.key = key;
     }
 
@@ -82,11 +130,11 @@ public class Node<T> {
         this.rightChild = rightChild;
     }
 
-    public Number getKey() {
+    public T getKey() {
         return this.key;
     }
 
-    public void setKey(int key) {
+    public void setKey(T key) {
         this.key = key;
     }
 
