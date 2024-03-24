@@ -1,9 +1,15 @@
 public class TwoThreeTree<T extends RunnerID> {
     private Node<T> root;
-    boolean isBalanced;// a flag indicates the tree is 2-3 TREE
+    private boolean isBalanced;// a flag indicates the tree is 2-3 TREE
+    private int numberOfLeaves ;
 
+    /**
+     * using the inf and -inf "towers" to save checks
+     * we assume there are no two identical keys since the TwoThreeTree will be used with IDs which are unique
+     */
 
     public TwoThreeTree() {
+        this.root = new Node<>();
         isBalanced = false;
     }
 
@@ -11,8 +17,9 @@ public class TwoThreeTree<T extends RunnerID> {
         return this.root;
     }
 
-    public void TwoThreeTreeInit() {
-        this.root = new Node<>();
+
+    public int getNumberOfLeaves() {
+        return numberOfLeaves;
     }
 
     /**
@@ -262,12 +269,12 @@ public class TwoThreeTree<T extends RunnerID> {
      * @param key the key we eat to find
      * @return the node that represents the runner(can be modify to the runner id itseld easily)
      */
-    public Node<T> Search(Node<T> x, T key) {
+    public  Node<T> Search(Node<T> x, T key) {
         if (x == null) {
             return null;
         }
         if (x.leftChild == null && x.rightChild == null) {//means that x is a leaf
-            if (x.getKey().isSmaller(key) && key.isSmaller(x.getKey()))
+            if (!(x.getKey().isSmaller(key)) && !(key.isSmaller(x.getKey())))
                 return x;
             else return null;
         }
@@ -333,3 +340,7 @@ public class TwoThreeTree<T extends RunnerID> {
         return minimalAvgRunner;
     }
 }
+
+
+
+
