@@ -5,7 +5,7 @@ public class Node<T extends RunnerID> {
     Node<T> rightChild;
     T key;
     //second key is float
-    int secondKey;
+    float secondKey;
     T value; // Runner or Run(???)
     int height;
     private T FastestRunnerAvg;//pointer to the runner with the minimal avg run time
@@ -54,34 +54,31 @@ public class Node<T extends RunnerID> {
     }
 
     // Constructors
-    public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, Node<T> rightChild, T value, T key, int secondKey) {
+    public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, Node<T> rightChild, T key, float secondKey) {
         this.parent = parent;
         this.leftChild = leftChild;
         this.middleChild = middleChild;
         this.rightChild = rightChild; //In TwoThreeTree always null
-        this.value = value;
         this.key = key;
         this.secondKey = secondKey;
     }
+
+    /**
+     * copy consturctor for the MinTree and AvgTree
+     * @param
+     */
+    //public Node(Node<T> nodeToCopy){
+     //   new Node<T>(null, null, null, null, null, nodeToCopy.getKey(), nodeToCopy.getSecondKey());
+   // }
 
     public TimeTree getRuns() {
         return runs;
     }
 
-    public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, T value, T key, int secondKey) {
-        this(parent, leftChild, middleChild, null, value, key, secondKey);
-    }
 
-    public Node(Node<T> parent, Node<T> leftChild, T value, T key, int secondKey) {
-        this(null, parent, leftChild, null, value, key, secondKey);
-    }
 
-    public Node(Node<T> parent, T value, T key, int secondKey) {
-        this(parent, null, null, null, value, key, secondKey);
-    }
-
-    public Node(T value, T key, int secondKey) {
-        this(null, null, null, null, value, key, secondKey);
+    public Node(T key, float secondKey) {
+        this(null, null, null, null, key, secondKey);
     }
 
     //public Node(int key, int secondKey) {
@@ -89,7 +86,7 @@ public class Node<T extends RunnerID> {
     //}
 
     public Node() {
-        this(null, null, null, null, null, null, Integer.MIN_VALUE);
+        this(null, null, null, null, null, Float.MIN_VALUE);
     }
 
     public Node(T key) {
@@ -138,7 +135,7 @@ public class Node<T extends RunnerID> {
         this.key = key;
     }
 
-    public int getSecondKey() {
+    public float getSecondKey() {
         return this.secondKey;
     }
 
