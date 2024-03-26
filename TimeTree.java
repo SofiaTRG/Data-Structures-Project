@@ -25,7 +25,14 @@ public class TimeTree {
             if (current.getTime() == time) {
                 return current;
             }
-            current = current.getTime() < time ? current.getRightChild() : current.getLeftChild();
+            if (time <= current.getLeftChild().getTime()) {
+                current=current.getLeftChild();
+            } else if (time <= current.getMiddleChild().getTime()) {
+                current=current.getMiddleChild();
+            } else {
+                current=current.getRightChild();
+            }
+//            current = current.getTime() < time ? current.getRightChild() : current.getLeftChild();
         }
         return null; //should return exception?
     }

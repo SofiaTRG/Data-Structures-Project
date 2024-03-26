@@ -121,8 +121,10 @@ public class TwoThreeTree<T extends RunnerID> {
      * @param node
      */
     public void Insert(Node<T> node) {
-        if (!isBalanced)
+        if (!isBalanced) {
             InitInsert(node);
+            return;
+        }
         Node<T> y = root;
         while (root.leftChild != null && root.rightChild != null)//while y is not a leaf
             if (node.getKey().isSmaller(y.leftChild.getKey()))
@@ -159,14 +161,14 @@ public class TwoThreeTree<T extends RunnerID> {
             UpdateKey(root);
         } else {//else we need to decide who is the left and the right.
             RunnerID leftRunner = root.leftChild.getKey();
-            RunnerID rightRunner = node.getKey();
-            if (leftRunner.isSmaller(rightRunner)) {
-                root.rightChild = node;
+            RunnerID middleRunner = node.getKey();
+            if (leftRunner.isSmaller(middleRunner)) {
+                root.middleChild = node;
                 node.setParent(root);
                 UpdateKey(root);
                 updateNodeRunners(root);
             } else {
-                root.rightChild = root.leftChild;
+                root.middleChild = root.leftChild;
                 root.leftChild = node;
                 node.setParent(root);
                 UpdateKey(root);
@@ -244,7 +246,7 @@ public class TwoThreeTree<T extends RunnerID> {
      */
     public void DeleteLeaf(Node<T> node) {
         if(!isBalanced)
-            deleteLast(node);
+            deleteLast();
         Node<T> parent = node.parent;
         if (node == parent.leftChild)
             SetChildren(parent, parent.middleChild, parent.rightChild, null);
@@ -303,7 +305,7 @@ public class TwoThreeTree<T extends RunnerID> {
      * @param node the node we check
      * @return the runner with the minimal run time from the children of the node
      */
-    public Node<T> findMinRuner(Node<T> node) {
+    public Node<T> findMinRuner(Node<T> node) { //TODO: FIXES THE CHILDREN PROBLEMS
         Node<T> minimalRunner;
         RunnerID x=node.leftChild.getKey();
         RunnerID y=node.middleChild.getKey();
@@ -319,8 +321,8 @@ public class TwoThreeTree<T extends RunnerID> {
             if(node.rightChild.getMinimalRunTime()==minimalRunner.getMinimalRunTime())
                 if(z.isSmaller(minimalRunner.getKey()))
                     minimalRunner=node.rightChild;
-            else if (node.rightChild.getMinimalRunTime() < minimalRunner.getMinimalRunTime())
-                 minimalRunner = node.rightChild;
+                else if (node.rightChild.getMinimalRunTime() < minimalRunner.getMinimalRunTime())
+                    minimalRunner = node.rightChild;
         return minimalRunner;
     }
     /**

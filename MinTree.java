@@ -19,9 +19,33 @@ public class MinTree {
             if (current.getKey() == time) {
                 return current;
             }
-            current = current.getKey() < time ? current.getRightChild() : current.getLeftChild();
+            if (current.getLeftChild()==null) {
+                return null;
+            }
+            else if (time <= current.getLeftChild().getKey()) {
+                current=current.getLeftChild();
+            } else if (time <= current.getMiddleChild().getKey()) {
+                current=current.getMiddleChild();
+            } else {
+                current=current.getRightChild();
+            }
+
+//                current = current.getKey() < time ? current.getRightChild() : current.getLeftChild();
         }
         return null; //should return exception?
+    }
+
+    public NodeFloat findNode(NodeFloat root, float time) {
+        if (root.getLeftChild()== null ) {
+            if (root.getKey() == time) {
+                return root;
+            }
+            else return null;
+        } if (time<=root.getLeftChild().getKey()) {
+            return findNode(root.getLeftChild(),time);
+        } else if (time<=root.getMiddleChild().getKey()) {
+            return findNode(root.getMiddleChild(),time);
+        } else return findNode(root.getRightChild(),time);
     }
 
     public NodeFloat getRoot(){
@@ -145,7 +169,8 @@ public class MinTree {
      * @param
      */
     public void Insert(RunnerID ID, float key){
-        NodeFloat x= SearchTmin(key,root);
+//            NodeFloat x= SearchTmin(key,root);
+        NodeFloat x= findNode(root, key);
         if(x!=null)
             x.getTree().Insert(new Node<>(ID,key));
 
@@ -249,8 +274,9 @@ public class MinTree {
      * working under the assumption that only leaves are getting deleted
      * @param
      */
-    public void Delete(RunnerID ID, float key){
-        NodeFloat x= SearchTmin(key,root);
+    public void Delete(RunnerID ID, float key){ //TODO: CHECK IF WORKING
+//            NodeFloat x= SearchTmin(key,root);
+        NodeFloat x= findNode(root, key);
         if(x!=null){
             if(x.getTree().getNumberOfLeaves()<=1) {
                 NodeFloat parent = x.getParent();
@@ -404,18 +430,29 @@ public class MinTree {
         minTree.Insert(new ConcreteRunnerID("Runner1"), 10);
         minTree.Insert(new ConcreteRunnerID("Runner2"), 15);
         minTree.Insert(new ConcreteRunnerID("Runner3"), 8);
+//        minTree.Insert(new ConcreteRunnerID("Runner4"), 15);
 
         System.out.println("Original Tree:");
         minTree.printTree();
 
+
+
         // Test search
-        float searchKey = 8;
+        float searchKey = 10;
         NodeFloat result = minTree.find(searchKey);
 
         if (result != null) {
             System.out.println("Key " + searchKey + " found in the tree.");
         } else {
             System.out.println("Key " + searchKey + " not found in the tree.");
+        }
+        float searchKey2 = 9;
+        NodeFloat result2 = minTree.find(searchKey2);
+
+        if (result2 != null) {
+            System.out.println("Key " + searchKey2 + " found in the tree.");
+        } else {
+            System.out.println("Key " + searchKey2 + " not found in the tree.");
         }
 
         // Additional tests and operations can be added based on your implementation
