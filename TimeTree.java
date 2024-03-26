@@ -19,7 +19,7 @@ public class TimeTree {
     }
 
     // Find a node with a specific time value
-    public Run find(float time) {
+    public Run find(float time) { //TODO: FIX SO IT'LL RETURN LEAF
         Run current = root;
         while (current != null) {
             if (current.getTime() == time) {
