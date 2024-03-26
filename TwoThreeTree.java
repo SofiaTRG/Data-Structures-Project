@@ -144,6 +144,7 @@ public class TwoThreeTree<T extends RunnerID> {
             SetChildren(w, x, z, null);
             this.root = w;
         }
+        numberOfLeaves++;
     }
 
     /**
@@ -232,12 +233,18 @@ public class TwoThreeTree<T extends RunnerID> {
         }
     }
 
+    public void deleteLast(){
+        numberOfLeaves--;
+        this.root=null;//it means that we removed the last node in the tree and because of that the root points to null
+    }
     /**
      * working under the assumption that only leaves are getting deleted
      *
      * @param node
      */
     public void DeleteLeaf(Node<T> node) {
+        if(!isBalanced)
+            deleteLast(node);
         Node<T> parent = node.parent;
         if (node == parent.leftChild)
             SetChildren(parent, parent.middleChild, parent.rightChild, null);
@@ -260,6 +267,9 @@ public class TwoThreeTree<T extends RunnerID> {
                 }
             }
         }
+        numberOfLeaves--;
+        if(numberOfLeaves==1)
+            isBalanced=false;
     }
 
     /**
