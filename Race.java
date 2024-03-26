@@ -1,21 +1,36 @@
 public class Race {
+    TwoThreeTree<RunnerID> RaceTree;
+    MinTree minTree;
+    MinTree AVGTree;
     public void init()
     {
-        throw new java.lang.UnsupportedOperationException("not implemented");
+        RaceTree = new TwoThreeTree<>();
+        minTree = new MinTree();
+        AVGTree = new MinTree();
     }
     public void addRunner(RunnerID id)
     {
-        throw new java.lang.UnsupportedOperationException("not implemented");
+        RaceTree.Insert(new Node<>(id));
+        minTree.Insert(id, Float.MAX_VALUE);
+        AVGTree.Insert(id, Float.MAX_VALUE);
     }
 
     public void removeRunner(RunnerID id)
     {
-        throw new java.lang.UnsupportedOperationException("not implemented");
+        Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
+        if (temp!=null) {
+            RaceTree.DeleteLeaf(temp);
+            minTree.Delete(id, temp.getMinimalRunTime());
+            AVGTree.Delete(id, temp.getAvgRunTime());
+        } // TODO: ERROR MASSAGE
     }
 
     public void addRunToRunner(RunnerID id, float time)
     {
-        throw new java.lang.UnsupportedOperationException("not implemented");
+        Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
+        if (temp!=null) {
+
+        }
     }
 
     public void removeRunFromRunner(RunnerID id, float time)

@@ -1,4 +1,4 @@
-public class Node<T extends RunnerID> {
+public class Node<T extends RunnerID> { //TODO: ADD FUNCTION
     Node<T> parent;
     Node<T> leftChild;
     Node<T> middleChild;

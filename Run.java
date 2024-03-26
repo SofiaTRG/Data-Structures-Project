@@ -13,7 +13,7 @@ public class Run {
      * Constructs a run with default values.
      */
     public Run() {
-        this(null, null, null, null, 0);
+        this(null, null, null, null, Float.MAX_VALUE);
     }
 
     /**
