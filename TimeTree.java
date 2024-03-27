@@ -36,6 +36,18 @@ public class TimeTree {
         }
         return null; //should return exception?
     }
+    public Run findNode(Run root, float time) {
+        if (root.getLeftChild()== null ) {
+            if (root.getTime() == time) {
+                return root;
+            }
+            else return null;
+        } if (time<=root.getLeftChild().getTime()) {
+            return findNode(root.getLeftChild(),time);
+        } else if (time<=root.getMiddleChild().getTime()) {
+            return findNode(root.getMiddleChild(),time);
+        } else return findNode(root.getRightChild(),time);
+    }
 
     public Run getRoot(){
         return this.root;
@@ -431,7 +443,8 @@ public class TimeTree {
 
         // Test search
         float searchKey = 7;
-        Run result = tree.Search(searchKey, tree.getRoot());
+        //Run result = tree.Search(searchKey, tree.getRoot());
+        Run result = tree.findNode(tree.getRoot(), searchKey);
 
         if (result != null) {
             System.out.println("Key " + searchKey + " found in the tree.");
