@@ -439,15 +439,18 @@ public class MinTree {
 
         // Test search
         float searchKey = 10;
-        NodeFloat result = minTree.find(searchKey);
+        NodeFloat result = minTree.findNode(minTree.getRoot(),searchKey);
 
         if (result != null) {
             System.out.println("Key " + searchKey + " found in the tree.");
+            minTree.Delete(result.getTree().getRoot().getKey(), searchKey);
+            System.out.println("After Deleting 10 Tree:");
+            minTree.printTree();
         } else {
             System.out.println("Key " + searchKey + " not found in the tree.");
         }
-        float searchKey2 = 9;
-        NodeFloat result2 = minTree.find(searchKey2);
+        float searchKey2 = 10;
+        NodeFloat result2 = minTree.findNode(minTree.getRoot(),searchKey);
 
         if (result2 != null) {
             System.out.println("Key " + searchKey2 + " found in the tree.");
