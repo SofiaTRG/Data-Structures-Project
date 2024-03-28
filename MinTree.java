@@ -430,11 +430,18 @@ public class MinTree {
         minTree.Insert(new ConcreteRunnerID("Runner1"), 10);
         minTree.Insert(new ConcreteRunnerID("Runner2"), 15);
         minTree.Insert(new ConcreteRunnerID("Runner3"), 8);
-//        minTree.Insert(new ConcreteRunnerID("Runner4"), 15);
 
         System.out.println("Original Tree:");
         minTree.printTree();
 
+        minTree.Insert(new ConcreteRunnerID("Runner5"), 15);
+        System.out.println("After Adding Runner5 with Time 15 Tree:");
+        minTree.printTree();
+
+        ConcreteRunnerID R = new ConcreteRunnerID("Runner4");
+        minTree.Insert(R, 15);
+        System.out.println("After Adding Runner4 with Time 15 Tree:");
+        minTree.printTree();
 
 
         // Test search
@@ -450,12 +457,26 @@ public class MinTree {
             System.out.println("Key " + searchKey + " not found in the tree.");
         }
         float searchKey2 = 10;
-        NodeFloat result2 = minTree.findNode(minTree.getRoot(),searchKey);
+        NodeFloat result2 = minTree.findNode(minTree.getRoot(),searchKey2);
 
         if (result2 != null) {
             System.out.println("Key " + searchKey2 + " found in the tree.");
         } else {
             System.out.println("Key " + searchKey2 + " not found in the tree.");
+        }
+
+        float searchKey3 = 15;
+        NodeFloat result3 = minTree.findNode(minTree.getRoot(),searchKey3);
+
+        if (result3 != null) {
+            System.out.println("Key " + searchKey3 + " found in the tree.");
+            Node<RunnerID> test3 = result3.getTree().Search(result3.getTree().getRoot(), R);
+            minTree.Delete(R, searchKey3);
+            System.out.println("After Deleting Runner4 Tree:");
+            minTree.printTree();
+
+        } else {
+            System.out.println("Key " + searchKey3 + " not found in the tree.");
         }
 
         // Additional tests and operations can be added based on your implementation

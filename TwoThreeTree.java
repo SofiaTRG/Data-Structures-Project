@@ -126,7 +126,7 @@ public class TwoThreeTree<T extends RunnerID> {
             return;
         }
         Node<T> y = root;
-        while (root.leftChild != null && root.rightChild != null)//while y is not a leaf
+        while (y.leftChild != null )//while y is not a leaf
             if (node.getKey().isSmaller(y.leftChild.getKey()))
                 y = y.leftChild;
             else if (node.getKey().isSmaller(y.middleChild.getKey()))
@@ -176,6 +176,7 @@ public class TwoThreeTree<T extends RunnerID> {
             }
             isBalanced = true;
         }
+        numberOfLeaves++;
     }
 
     /**
@@ -285,16 +286,16 @@ public class TwoThreeTree<T extends RunnerID> {
         if (x == null) {
             return null;
         }
-        if (x.leftChild == null && x.rightChild == null) {//means that x is a leaf
+        if (x.leftChild == null ) {//means that x is a leaf
             if (!(x.getKey().isSmaller(key)) && !(key.isSmaller(x.getKey())))
                 return x;
             else return null;
         }
         if (key.isSmaller(x.leftChild.getKey())
-                || x.leftChild.getKey().isSmaller(key) && key.isSmaller(x.leftChild.getKey())) {
+                || !(x.leftChild.getKey().isSmaller(key) || key.isSmaller(x.leftChild.getKey()))) {
             return Search(x.leftChild, key);
         } else if (key.isSmaller(x.middleChild.getKey())
-                || x.middleChild.getKey().isSmaller(key) && key.isSmaller(x.middleChild.getKey())) {
+                || !(x.middleChild.getKey().isSmaller(key) || key.isSmaller(x.middleChild.getKey()))) {
             return Search(x.middleChild, key);
         } else return Search(x.rightChild, key);
     }
@@ -309,17 +310,17 @@ public class TwoThreeTree<T extends RunnerID> {
         Node<T> minimalRunner;
         RunnerID x=node.leftChild.getKey();
         RunnerID y=node.middleChild.getKey();
-        RunnerID z=node.rightChild.getKey();
-        if(node.leftChild.getMinimalRunTime()==node.rightChild.getMinimalRunTime())
+//        RunnerID z=node.rightChild.getKey();
+        if(node.leftChild.getMinimalRunTime()==node.middleChild.getMinimalRunTime())
             if(x.isSmaller(y))
                 minimalRunner=node.leftChild;
             else minimalRunner=node.middleChild;
-        else if (node.leftChild.getMinimalRunTime() < node.rightChild.getMinimalRunTime())
+        else if (node.leftChild.getMinimalRunTime() < node.middleChild.getMinimalRunTime())
             minimalRunner = node.leftChild;
         else minimalRunner = node.middleChild;
         if (node.rightChild != null)
             if(node.rightChild.getMinimalRunTime()==minimalRunner.getMinimalRunTime())
-                if(z.isSmaller(minimalRunner.getKey()))
+                if(node.rightChild.getKey().isSmaller(minimalRunner.getKey()))
                     minimalRunner=node.rightChild;
                 else if (node.rightChild.getMinimalRunTime() < minimalRunner.getMinimalRunTime())
                     minimalRunner = node.rightChild;
@@ -335,17 +336,17 @@ public class TwoThreeTree<T extends RunnerID> {
         Node<T> minimalAvgRunner;
         RunnerID x=node.leftChild.getKey();
         RunnerID y=node.middleChild.getKey();
-        RunnerID z=node.rightChild.getKey();
-        if(node.leftChild.getAvgRunTime()==node.rightChild.getAvgRunTime())
+//        RunnerID z=node.rightChild.getKey();
+        if(node.leftChild.getAvgRunTime()==node.middleChild.getAvgRunTime())
             if(x.isSmaller(y))
                 minimalAvgRunner =node.leftChild;
             else minimalAvgRunner =node.middleChild;
-        else if (node.leftChild.getAvgRunTime() < node.rightChild.getAvgRunTime())
+        else if (node.leftChild.getAvgRunTime() < node.middleChild.getAvgRunTime())
             minimalAvgRunner = node.leftChild;
         else minimalAvgRunner = node.middleChild;
         if (node.rightChild != null)
             if(node.rightChild.getAvgRunTime()== minimalAvgRunner.getAvgRunTime())
-                if(z.isSmaller(minimalAvgRunner.getKey()))
+                if(node.rightChild.getKey().isSmaller(minimalAvgRunner.getKey()))
                     minimalAvgRunner =node.rightChild;
                 else if (node.rightChild.getAvgRunTime() < minimalAvgRunner.getAvgRunTime())
                     minimalAvgRunner = node.rightChild;
