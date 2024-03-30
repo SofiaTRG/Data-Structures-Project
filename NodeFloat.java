@@ -69,4 +69,21 @@ public class NodeFloat {
         this.rightChild = rightChild;
     }
 
+    public int getNumberOfChildren() {//TODO: CHECK IF WORKING
+        int count = 0;
+        if (this.leftChild != null) {
+            count++;
+            count += this.leftChild.getNumberOfChildren();
+        }
+        if (this.middleChild != null) {
+            count++;
+            count += this.middleChild.getNumberOfChildren();
+        }
+        if (this.rightChild != null) {
+            count++;
+            count += this.rightChild.getNumberOfChildren();
+        }
+        return count;
+    }
+
 }

@@ -401,6 +401,21 @@ public class MinTree {
         }
     }
 
+    public int Rank(NodeFloat x) {//TODO:CHECK IF WORKING
+        int rank = 1;
+        NodeFloat y = x.getParent();
+        while (y != null) {
+            if (x == y.getMiddleChild()) {
+                rank += y.getLeftChild() != null ? y.getLeftChild().getNumberOfChildren() + 1 : 1;
+            } else if (x == y.getRightChild()) {
+                rank += (y.getLeftChild() != null ? y.getLeftChild().getNumberOfChildren() + 1 : 1) + (y.getMiddleChild() != null ? y.getMiddleChild().getNumberOfChildren() + 1 : 1);
+            }
+            x = y;
+            y = y.getParent();
+        }
+        return rank;
+    }
+
     /** Prints functions for testing **/
 
     private void recursivePrint(NodeFloat node) {
