@@ -458,10 +458,18 @@ public class MinTree {
         System.out.println("After Adding Runner4 with Time 15 Tree:");
         minTree.printTree();
 
-
         // Test search
         float searchKey = 10;
         NodeFloat result = minTree.findNode(minTree.getRoot(),searchKey);
+
+        if (result != null) {
+            System.out.println("Key " + searchKey + " found in the tree.");
+            minTree.Delete(result.getTree().getRoot().getKey(), searchKey);
+            System.out.println("After Deleting 10 Tree:");
+            minTree.printTree();
+        } else {
+            System.out.println("Key " + searchKey + " not found in the tree.");
+        }
 
         if (result != null) {
             System.out.println("Key " + searchKey + " found in the tree.");
