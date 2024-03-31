@@ -5,6 +5,7 @@ public class NodeFloat {
     NodeFloat leftChild;
     NodeFloat middleChild;
     NodeFloat rightChild;
+    private int size=0;//**
 
     public NodeFloat(float key, NodeFloat parent, NodeFloat leftChild, NodeFloat middleChild, NodeFloat rightChild) {
         Key = key;
