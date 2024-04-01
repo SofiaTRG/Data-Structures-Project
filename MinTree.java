@@ -293,7 +293,7 @@ public class MinTree {
      * working under the assumption that only leaves are getting deleted
      * @param
      */
-    public void Delete(RunnerID ID, float key){ //TODO: CHECK IF WORKING// fix the merge
+    public void Delete(RunnerID ID, float key){ //TODO: CHECK IF WORKING// need to verify it supports updating the size value
 //            NodeFloat x= SearchTmin(key,root);
         NodeFloat x= findNode(root, key);
         if(x!=null){
