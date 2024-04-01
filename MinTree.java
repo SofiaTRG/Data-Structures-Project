@@ -66,13 +66,16 @@ public class MinTree {
     private void UpdateKey(NodeFloat parent){
         if (parent.getMiddleChild() == null) {
             parent.setKey(parent.getLeftChild().getKey());
+            parent.setSize(parent.getLeftChild().getSize()); // TODO:check for rank
             return;
         } //assuming we call the function not on a leaf
         if(parent.getRightChild() == null){
             parent.setKey(parent.getMiddleChild().getKey());
+            parent.setSize(parent.getLeftChild().getSize()+parent.getMiddleChild().getSize()); // TODO:check for rank
             return;
         }
         parent.setKey(parent.getRightChild().getKey());
+        parent.setSize(parent.getLeftChild().getSize()+parent.getMiddleChild().getSize()+parent.getRightChild().getSize()); // TODO:check for rank
     }
 
 
@@ -122,13 +125,13 @@ public class MinTree {
             SetChildren(splitNode, parent.getRightChild(),newChild,null);
             SetChildren(parent, parent.getLeftChild(), parent.getMiddleChild(),null);
         }
-        //update the size value of the original parent
-        int currSize ;
-        currSize=parent.getLeftChild().getSize()+parent.getMiddleChild().getSize();
-        parent.setSize(currSize);
-        //update the size value of the new node we created
-        currSize=splitNode.getLeftChild().getSize()+splitNode.getMiddleChild().getSize();
-        splitNode.setSize(currSize);
+        //update the size value of the original parent //PREVIUS FOR RANK
+//        int currSize ;
+//        currSize=parent.getLeftChild().getSize()+parent.getMiddleChild().getSize();
+//        parent.setSize(currSize);
+//        //update the size value of the new node we created
+//        currSize=splitNode.getLeftChild().getSize()+splitNode.getMiddleChild().getSize();
+//        splitNode.setSize(currSize);
         return splitNode;
     }
 
@@ -148,20 +151,23 @@ public class MinTree {
         if(parent.getRightChild() == null){ // can insert without split and deg_in(parent)==2
             if(newChild.getKey() < parent.getLeftChild().getKey()) {
                 SetChildren(parent,newChild, parent.getLeftChild(), parent.getMiddleChild());
-                parent.setSize(parent.getSize()+1);
+//                parent.setSize(parent.getSize()+1);
                 return null;
             }
             if(parent.getMiddleChild() == null){
                 SetChildren(parent, parent.getLeftChild(),newChild,null);
+//                parent.setSize(parent.getSize()+1); //TODO: check for rank
                 return null;
             }
             if(newChild.getKey() < parent.getMiddleChild().getKey() && parent.getRightChild() == null) {
                 SetChildren(parent, parent.getLeftChild(),newChild, parent.getMiddleChild());
+//                parent.setSize(parent.getSize()+1);//TODO: check for rank
                 return null;
             }
             // לבדוק את התנאי
             else {
                 SetChildren(parent, parent.getLeftChild(), parent.getMiddleChild(), newChild);
+//                parent.setSize(parent.getSize()+1);//TODO: check for rank
                 return null;
             }
         }
@@ -203,7 +209,7 @@ public class MinTree {
                 }
             }
 
-            NodeFloat parentSave = temp.getParent();//current ancecctor that we look at
+            NodeFloat parentSave = temp.getParent();//current acecctor that we look at
             //check (20, inf)
             TwoThreeTree<RunnerID> tree=new TwoThreeTree<RunnerID>();
             tree.Insert(new Node<>(ID));
@@ -213,7 +219,7 @@ public class MinTree {
             while (parentSave != this.root) { //update the keys of the tree
                 temp = parentSave.getParent();
                 if (newNode != null) {
-                    newNode = Insert_And_Split(parentSave, newNode);
+                    newNode = Insert_And_Split(parentSave, newNode); //????
                 }
                 if (newNode==null){// we inserted the new node without split then deg_in(parentsave)==3
                     parentSave.setSize(parentSave.getSize()+1);//we should update the parent size value by 1
@@ -422,6 +428,22 @@ public class MinTree {
     }
 
 
+    public int Rank(NodeFloat x) {
+        int rank = 1;
+        NodeFloat y = x.getParent();
+        while (y != null) {
+            if (x == y.getMiddleChild()) {
+                rank = rank + y.getLeftChild().getSize();
+//                System.out.println(rank);
+            } else if (x == y.getRightChild()) {
+                rank = rank + y.getLeftChild().getSize() + y.getMiddleChild().getSize();
+//                System.out.println(rank);
+            }
+            x = y;
+            y = y.getParent();
+        }
+        return rank;
+    }
 
     /** Prints functions for testing **/
 
@@ -465,6 +487,23 @@ public class MinTree {
         System.out.println("After Adding Runner4 with Time 15 Tree:");
         minTree.printTree();
 
+
+        // Retrieve a node for testing rank
+        NodeFloat nodeToTest = minTree.findNode(minTree.getRoot(), 8);
+
+        // Check the rank of the node
+        int rank = minTree.Rank(nodeToTest);
+        System.out.println("Rank function test, the test is:");
+        System.out.println(rank);
+
+//        // Expected rank for the node with key 12 is 3
+//        if (rank == 2) {
+//            System.out.println("Rank function test passed!");
+//        } else {
+//            System.out.println("Rank function test failed!");
+//            System.out.println(rank);
+//        }
+
         // Test search
         float searchKey = 10;
         NodeFloat result = minTree.findNode(minTree.getRoot(),searchKey);
@@ -494,6 +533,13 @@ public class MinTree {
         } else {
             System.out.println("Key " + searchKey2 + " not found in the tree.");
         }
+
+        NodeFloat nodeToTest2 = minTree.findNode(minTree.getRoot(), 15);
+
+        // Check the rank of the node
+        int rank2 = minTree.Rank(nodeToTest2);
+        System.out.println("Rank function test, the test is:");
+        System.out.println(rank2);
 
         float searchKey3 = 15;
         NodeFloat result3 = minTree.findNode(minTree.getRoot(),searchKey3);
