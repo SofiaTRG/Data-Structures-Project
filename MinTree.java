@@ -122,6 +122,13 @@ public class MinTree {
             SetChildren(splitNode, parent.getRightChild(),newChild,null);
             SetChildren(parent, parent.getLeftChild(), parent.getMiddleChild(),null);
         }
+        //update the size value of the original parent
+        int currSize ;
+        currSize=parent.getLeftChild().getSize()+parent.getMiddleChild().getSize();
+        parent.setSize(currSize);
+        //update the size value of the new node we created
+        currSize=splitNode.getLeftChild().getSize()+splitNode.getMiddleChild().getSize();
+        splitNode.setSize(currSize);
         return splitNode;
     }
 
@@ -137,9 +144,11 @@ public class MinTree {
         if (parent.getParent() !=null){
             parent= parent.getParent();
         }
-        if(parent.getRightChild() == null){ // can insert without split
+
+        if(parent.getRightChild() == null){ // can insert without split and deg_in(parent)==2
             if(newChild.getKey() < parent.getLeftChild().getKey()) {
                 SetChildren(parent,newChild, parent.getLeftChild(), parent.getMiddleChild());
+                parent.setSize(parent.getSize()+1);
                 return null;
             }
             if(parent.getMiddleChild() == null){
@@ -168,7 +177,7 @@ public class MinTree {
      * updates the keys throughout the tree after insertion
      * @param
      */
-    public void Insert(RunnerID ID, float key){
+    public void Insert(RunnerID ID, float key){//TODO: check inserting leaves with size=1;
 //            NodeFloat x= SearchTmin(key,root);
         NodeFloat x= findNode(root, key);
         if(x!=null)
@@ -178,7 +187,9 @@ public class MinTree {
             if (this.root.getLeftChild() == null) {
                 TwoThreeTree<RunnerID> tree=new TwoThreeTree<RunnerID>();
                 tree.Insert(new Node<>(ID));
-                this.root.setLeftChild(new NodeFloat(key,tree));
+                NodeFloat y=new NodeFloat(key,tree);
+                y.setSize(1);//insterting a new leaf with size 1
+                this.root.setLeftChild(y);
                 return;
             } //in case we have an empty tree
             NodeFloat temp = this.root;
@@ -192,15 +203,20 @@ public class MinTree {
                 }
             }
 
-            NodeFloat parentSave = temp.getParent();
+            NodeFloat parentSave = temp.getParent();//current ancecctor that we look at
             //check (20, inf)
             TwoThreeTree<RunnerID> tree=new TwoThreeTree<RunnerID>();
             tree.Insert(new Node<>(ID));
-            NodeFloat newNode = Insert_And_Split(temp, new NodeFloat(key,tree)); // found place in tree - Insert
+            NodeFloat y=new NodeFloat(key,tree);
+            y.setSize(1);//inserting a new leaf with size 1
+            NodeFloat newNode = Insert_And_Split(temp, y); // found place in tree - Insert
             while (parentSave != this.root) { //update the keys of the tree
                 temp = parentSave.getParent();
                 if (newNode != null) {
                     newNode = Insert_And_Split(parentSave, newNode);
+                }
+                if (newNode==null){// we inserted the new node without split then deg_in(parentsave)==3
+                    parentSave.setSize(parentSave.getSize()+1);//we should update the parent size value by 1
                 }
                 UpdateKey(parentSave);
                 parentSave = temp;
@@ -208,6 +224,9 @@ public class MinTree {
             if (newNode != null) { //need a new root
                 NodeFloat newRoot = new NodeFloat(0);//TODO:CHECK
                 SetChildren(newRoot, parentSave, newNode, null);
+                int currSize ;
+                currSize=parentSave.getSize()+newNode.getSize();//updating the new root size value if needed
+                newRoot.setSize(currSize);
                 this.root = newRoot;
             }
         }
@@ -274,7 +293,7 @@ public class MinTree {
      * working under the assumption that only leaves are getting deleted
      * @param
      */
-    public void Delete(RunnerID ID, float key){ //TODO: CHECK IF WORKING
+    public void Delete(RunnerID ID, float key){ //TODO: CHECK IF WORKING// fix the merge
 //            NodeFloat x= SearchTmin(key,root);
         NodeFloat x= findNode(root, key);
         if(x!=null){
@@ -289,6 +308,7 @@ public class MinTree {
                         SetChildren(parent, parent.getLeftChild(), parent.getMiddleChild(), null);
                     }
                     x.setParent(null); // Deleting node from the tree, assuming node is a leaf
+                    parent.setSize(parent.getSize()-1);//because we want to delete the leaf x  //the parent of the leaf
                 }
                 // Can't rearrange. Need to borrow or merge. Delete node first
                 else if (parent.getLeftChild() == x) {
