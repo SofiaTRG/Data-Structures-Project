@@ -32,15 +32,18 @@ public class TwoThreeTree<T extends RunnerID> {
         if (parent.middleChild == null) {
             parent.key = parent.leftChild.key;
             parent.secondKey = parent.leftChild.secondKey;
+            parent.setSizeRank(parent.getLeftChild().getSizeRank()); // FOR RANK FUNCTION
             return;
         } //assuming we call the function not on a leaf
         if (parent.rightChild == null) {
             parent.key = parent.middleChild.key;
             parent.secondKey = parent.middleChild.secondKey;
+            parent.setSizeRank(parent.getLeftChild().getSizeRank()+parent.getMiddleChild().getSizeRank()); // FOR RANK FUNCTION
             return;
         }
         parent.key = parent.rightChild.key;
         parent.secondKey = parent.rightChild.secondKey;
+        parent.setSizeRank(parent.getLeftChild().getSizeRank()+parent.getMiddleChild().getSizeRank()+parent.getRightChild().getSizeRank()); // FOR RANK FUNCTION
     }
 
 
@@ -121,6 +124,7 @@ public class TwoThreeTree<T extends RunnerID> {
      * @param node
      */
     public void Insert(Node<T> node) {
+        node.setSizeRank(1); //FOR RANK IN ID TREE
         if (!isBalanced) {
             InitInsert(node);
             return;
@@ -351,6 +355,21 @@ public class TwoThreeTree<T extends RunnerID> {
                 else if (node.rightChild.getAvgRunTime() < minimalAvgRunner.getAvgRunTime())
                     minimalAvgRunner = node.rightChild;
         return minimalAvgRunner;
+    }
+
+    public int Rank(Node<T> x) {
+        int rank =1;
+        Node<T> y = x.getParent();
+        while (y != null) {
+            if (x == y.getMiddleChild()) {
+                rank = rank + y.getLeftChild().getSize();
+            } else if (x == y.getRightChild()) {
+                rank = rank + y.getLeftChild().getSize() +y.getMiddleChild().getSize();
+            }
+            x = y;
+            y = y.getParent();
+        }
+        return rank;
     }
 }
 

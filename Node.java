@@ -1,4 +1,4 @@
-public class Node<T extends RunnerID> { //TODO: ADD FUNCTION
+public class Node<T extends RunnerID> {
     Node<T> parent;
     Node<T> leftChild;
     Node<T> middleChild;
@@ -16,6 +16,7 @@ public class Node<T extends RunnerID> { //TODO: ADD FUNCTION
     private TimeTree runs;
     private float MinimalRunTime;
     private float AvgRunTime;
+    private int sizeRank = 0; // FOR THE RANK IN ID TREE
 
     public T getFastestRunnerAvg() {
         return FastestRunnerAvg;
@@ -68,8 +69,8 @@ public class Node<T extends RunnerID> { //TODO: ADD FUNCTION
      * @param
      */
     //public Node(Node<T> nodeToCopy){
-     //   new Node<T>(null, null, null, null, null, nodeToCopy.getKey(), nodeToCopy.getSecondKey());
-   // }
+    //   new Node<T>(null, null, null, null, null, nodeToCopy.getKey(), nodeToCopy.getSecondKey());
+    // }
 
     public TimeTree getRuns() {
         return runs;
@@ -149,5 +150,13 @@ public class Node<T extends RunnerID> { //TODO: ADD FUNCTION
 
     public void setValue(T key) {
         this.value = key;
+    }
+
+    public int getSizeRank() { //FOR RANK IN ID TREE
+        return sizeRank;
+    }
+
+    public void setSizeRank(int sizeRank) { //FOR RANK IN ID TREE
+        this.sizeRank = sizeRank;
     }
 }
