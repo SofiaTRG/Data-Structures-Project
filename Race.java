@@ -32,6 +32,8 @@ public class Race {
             float Pmin = temp.getMinimalRunTime();
             float PAVG = temp.getAvgRunTime();
             temp.getRuns().Insert(new Run(time));
+            temp.calculateMin();
+            temp.calculateAverage(time);
             // delete the id in min and avg trees and insert again
             // (the min and avg can be changed when we put new times)
             // we find the ids by their previous keys
@@ -52,7 +54,8 @@ public class Race {
                 float Pmin = temp.getMinimalRunTime();
                 float PAVG = temp.getAvgRunTime();
                 temp.getRuns().Delete(runTemp);
-
+                temp.calculateMin();
+                temp.calculateAverageAfterDelete(time);
                 // delete the id in min and avg trees and insert again
                 // (the min and avg can be changed when we put new times)
                 // we find the ids by their previous keys
@@ -60,7 +63,6 @@ public class Race {
                 minTree.Insert(id, temp.getMinimalRunTime());
                 AVGTree.Delete(id, PAVG);
                 AVGTree.Insert(id, temp.getAvgRunTime());
-
             } //TODO: ERROR MASSAGE RUN NOT FOUND
 
         }
@@ -91,11 +93,27 @@ public class Race {
 
     public int getRankAvg(RunnerID id)
     {
-        throw new java.lang.UnsupportedOperationException("not implemented");
+        Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
+        if (temp!=null) {
+            float tempAVG = temp.getAvgRunTime();
+            NodeFloat tempFloat = AVGTree.findNode(AVGTree.getRoot(), tempAVG);
+            Node <RunnerID> tempRoot = tempFloat.getTree().getRoot();;
+            Node <RunnerID> tempID = tempFloat.getTree().Search(tempRoot, id);
+            return AVGTree.Rank(tempFloat) + tempFloat.getTree().Rank(tempID);
+        }
+        return 0; //TODO: ERROR MASSAGE NO SUCH ID
     }
 
     public int getRankMin(RunnerID id)
     {
-        throw new java.lang.UnsupportedOperationException("not implemented");
+        Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
+        if (temp!=null) {
+            float tempMIN = temp.getMinimalRunTime();
+            NodeFloat tempFloat = minTree.findNode(minTree.getRoot(), tempMIN);
+            Node <RunnerID> tempRoot = tempFloat.getTree().getRoot();;
+            Node <RunnerID> tempID = tempFloat.getTree().Search(tempRoot, id);
+            return minTree.Rank(tempFloat) + tempFloat.getTree().Rank(tempID);
+        }
+        return 0; //TODO: ERROR MASSAGE NO SUCH ID
     }
 }

@@ -188,7 +188,6 @@ public class MinTree {
         NodeFloat x= findNode(root, key);
         if(x!=null)
             x.getTree().Insert(new Node<>(ID,key));
-
         else {
             if (this.root.getLeftChild() == null) {
                 TwoThreeTree<RunnerID> tree=new TwoThreeTree<RunnerID>();
@@ -443,6 +442,28 @@ public class MinTree {
             y = y.getParent();
         }
         return rank;
+    }
+
+
+    public void updateSize(NodeFloat parent) {
+        if (parent.getMiddleChild() == null) {
+            parent.setSize(parent.getLeftChild().getSize()); // TODO:check for rank
+            return;
+        } //assuming we call the function not on a leaf
+        if(parent.getRightChild() == null){
+            parent.setSize(parent.getLeftChild().getSize()+parent.getMiddleChild().getSize()); // TODO:check for rank
+            return;
+        }
+        parent.setSize(parent.getLeftChild().getSize()+parent.getMiddleChild().getSize()+parent.getRightChild().getSize()); // TODO:check for rank
+    }
+
+    public void updateSizeFathers(NodeFloat x) {
+        x.setSize(x.getTree().getNumberOfLeaves());
+        NodeFloat parent = x.getParent();
+        while (parent!=null) {
+            this.updateSize(parent);
+            parent = parent.getParent();
+        }
     }
 
     /** Prints functions for testing **/

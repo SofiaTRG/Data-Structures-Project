@@ -16,6 +16,7 @@ public class Node<T extends RunnerID> {
     private TimeTree runs;
     private float MinimalRunTime;
     private float AvgRunTime;
+    private int numRuns;
     private int sizeRank = 0; // FOR THE RANK IN ID TREE
 
     public T getFastestRunnerAvg() {
@@ -62,6 +63,7 @@ public class Node<T extends RunnerID> {
         this.rightChild = rightChild; //In TwoThreeTree always null
         this.key = key;
         this.secondKey = secondKey;
+        this.numRuns = 0;
     }
 
     /**
@@ -158,5 +160,19 @@ public class Node<T extends RunnerID> {
 
     public void setSizeRank(int sizeRank) { //FOR RANK IN ID TREE
         this.sizeRank = sizeRank;
+    }
+
+    public void calculateAverage(float time) {
+        this.AvgRunTime =  ((AvgRunTime * numRuns) + time) / (numRuns + 1);
+        this.numRuns += 1;
+    }
+
+    public void calculateAverageAfterDelete(float time) {
+        this.AvgRunTime = ((AvgRunTime * numRuns) - time) / (numRuns - 1);
+        this.numRuns -= 1;
+    }
+
+    public void calculateMin() {
+        this.MinimalRunTime =this.runs.getRoot().getMin();
     }
 }

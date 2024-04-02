@@ -158,7 +158,7 @@ public class TwoThreeTree<T extends RunnerID> {
      *
      * @param node a new node we want to insert a a leaf
      */
-    public void InitInsert(Node<T> node) {
+    public void InitInsert(Node<T> node) { //TODO: ADD SIZE CALCULATION
         if (root.leftChild == null) {//it means that it is the first leaf we insert to the tree
             root.leftChild = node;
             node.setParent(root);
