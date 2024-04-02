@@ -105,7 +105,10 @@ public class Race {
     public float getMinRun(RunnerID id)
     {
         // find the node of runner in ID tree, then get his min time
-        return RaceTree.Search(RaceTree.getRoot(), id).getMinimalRunTime();
+        Node <RunnerID> tempRoot = RaceTree.getRoot();
+        Node <RunnerID> tempNode = RaceTree.Search(tempRoot, id);
+        return tempNode.getMinimalRunTime();
+//        return RaceTree.Search(RaceTree.getRoot(), id).getMinimalRunTime();
     }
     public float getAvgRun(RunnerID id) {
         // find the node of runner in ID tree, then get his ang time

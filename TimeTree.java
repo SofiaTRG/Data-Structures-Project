@@ -66,17 +66,22 @@ public class TimeTree {
      */
     private void UpdateKey(Run parent){
         parent.setMin(parent.getLeftChild().getMin());
-        if(parent.getLeftChild().getTime()==Float.MIN_VALUE)
-            parent.setMin(parent.getMiddleChild().getTime());
+//        if(parent.getLeftChild().getTime()==Float.MIN_VALUE)
+//            parent.setMin(parent.getMiddleChild().getTime());
         if (parent.getMiddleChild() == null) {
             parent.setTime(parent.getLeftChild().getTime());
             return;
         } //assuming we call the function not on a leaf
         if(parent.getRightChild() == null) {
             parent.setTime(parent.getMiddleChild().getTime());
+            if(parent.getLeftChild().getTime()==Float.MIN_VALUE)
+                parent.setMin(parent.getMiddleChild().getTime());
             return;
         }
         parent.setTime(parent.getRightChild().getTime());
+//        parent.setMin(parent.getLeftChild().getMin());
+        if(parent.getLeftChild().getTime()==Float.MIN_VALUE)
+            parent.setMin(parent.getMiddleChild().getTime());
     }
 
 
@@ -426,34 +431,37 @@ public class TimeTree {
 
     // Test the 2-3 tree
     // Test the 2-3 tree
-    public static void main(String[] args) {
-        TimeTree tree = new TimeTree();
-
-        float[] keysToInsert = {10, 5, 15, 2, 7, 12};
-
-        for (float key : keysToInsert) {
-            tree.Insert(new Run(key));
-        }
-
-        float a = 20;
-        tree.Insert(new Run(a));
-
-        System.out.println("Original Tree:");
-        tree.printTree();
-
-        // Test search
-        float searchKey = 7;
-        //Run result = tree.Search(searchKey, tree.getRoot());
-        Run result = tree.findNode(tree.getRoot(), searchKey);
-
-        if (result != null) {
-            System.out.println("Key " + searchKey + " found in the tree.");
-        } else {
-            System.out.println("Key " + searchKey + " not found in the tree.");
-        }
-
-        System.out.println(tree.root.getMin());
-        // Additional tests and operations can be added based on your implementation
-    }
+//    public static void main(String[] args) {
+//        TimeTree tree = new TimeTree();
+//
+//        float[] keysToInsert = {10, 5, 15, 2, 7, 12};
+//
+//        for (float key : keysToInsert) {
+//            tree.Insert(new Run(key));
+//        }
+//
+//        float a = 20;
+//        tree.Insert(new Run(a));
+//
+//        System.out.println("Original Tree:");
+//        tree.printTree();
+//
+//        // Test search
+//        float searchKey = 7;
+//        //Run result = tree.Search(searchKey, tree.getRoot());
+//        Run result = tree.findNode(tree.getRoot(), searchKey);
+//
+//        if (result != null) {
+//            System.out.println("Key " + searchKey + " found in the tree.");
+//            tree.Delete(result);
+//            System.out.println("After Delete Tree:");
+//            tree.printTree();
+//        } else {
+//            System.out.println("Key " + searchKey + " not found in the tree.");
+//        }
+//
+//        System.out.println(tree.root.getMin());
+//        // Additional tests and operations can be added based on your implementation
+//    }
 
 }
