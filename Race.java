@@ -2,6 +2,10 @@ public class Race {
     TwoThreeTree<RunnerID> RaceTree;
     MinTree minTree;
     MinTree AVGTree;
+
+    public Race() {
+        init();
+    }
     public void init()
     {
         RaceTree = new TwoThreeTree<>();

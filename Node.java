@@ -64,6 +64,7 @@ public class Node<T extends RunnerID> {
         this.key = key;
         this.secondKey = secondKey;
         this.numRuns = 0;
+        this.runs = new TimeTree();
     }
 
     /**
@@ -92,7 +93,8 @@ public class Node<T extends RunnerID> {
         this(null, null, null, null, null, Float.MIN_VALUE);
     }
 
-    public Node(T key) {
+    public Node(T key) { // TODO: CHECK
+        this.runs = new TimeTree();
         this.key = key;
     }
 
