@@ -41,6 +41,14 @@ public class Race {
             minTree.Insert(id, temp.getMinimalRunTime());
             AVGTree.Delete(id, PAVG);
             AVGTree.Insert(id, temp.getAvgRunTime());
+
+            // find the leaves in min and AVG tree
+            NodeFloat newMIN = minTree.findNode(minTree.getRoot(), temp.getMinimalRunTime());
+            NodeFloat newAVG = AVGTree.findNode(AVGTree.getRoot(), temp.getAvgRunTime());
+
+            // update the sizes of ancestors
+            minTree.updateSizeFathers(newMIN);
+            AVGTree.updateSizeFathers(newAVG);
         }
         //TODO: ERROR MASSAGE NO SUCH ID
     }
@@ -63,6 +71,15 @@ public class Race {
                 minTree.Insert(id, temp.getMinimalRunTime());
                 AVGTree.Delete(id, PAVG);
                 AVGTree.Insert(id, temp.getAvgRunTime());
+
+                // find the leaves in min and AVG tree
+                NodeFloat newMIN = minTree.findNode(minTree.getRoot(), temp.getMinimalRunTime());
+                NodeFloat newAVG = AVGTree.findNode(AVGTree.getRoot(), temp.getAvgRunTime());
+
+                // update the sizes of ancestors
+                minTree.updateSizeFathers(newMIN);
+                AVGTree.updateSizeFathers(newAVG);
+
             } //TODO: ERROR MASSAGE RUN NOT FOUND
 
         }
