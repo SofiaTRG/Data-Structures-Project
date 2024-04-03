@@ -15,6 +15,7 @@ public class Run {
     public Run() {
         this(null, null, null, null, Float.MAX_VALUE);
     }
+    //when there's no run for the runner
 
     /**
      * Constructs a run with specified values.
