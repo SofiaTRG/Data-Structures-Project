@@ -75,8 +75,8 @@ public class TwoThreeTree<T extends RunnerID> {
         Node<T> fastestAvgRunner;
         fastestRunner= findMinRuner(parent);
         fastestAvgRunner=minRunnerAvgRunTime(parent);
-        parent.setFastestRunnerMin(fastestRunner.getKey());
-        parent.setFastestRunnerAvg(fastestAvgRunner.getKey());
+        parent.setFastestRunnerMin(fastestRunner.getFastestRunnerMin());
+        parent.setFastestRunnerAvg(fastestAvgRunner.getFastestRunnerAvg());
         parent.setMinimalRunTime(fastestRunner.getMinimalRunTime());
         parent.setAvgRunTime(fastestRunner.getAvgRunTime());
     }
@@ -342,12 +342,14 @@ public class TwoThreeTree<T extends RunnerID> {
         else if (node.leftChild.getMinimalRunTime() < node.middleChild.getMinimalRunTime())
             minimalRunner = node.leftChild;
         else minimalRunner = node.middleChild;
-        if (node.rightChild != null)
-            if(node.rightChild.getMinimalRunTime()==minimalRunner.getMinimalRunTime())
-                if(node.rightChild.getKey().isSmaller(minimalRunner.getKey()))
-                    minimalRunner=node.rightChild;
-                else if (node.rightChild.getMinimalRunTime() < minimalRunner.getMinimalRunTime())
+        if (node.rightChild != null){
+            if(node.rightChild.getMinimalRunTime()==minimalRunner.getMinimalRunTime()) {
+                if (node.rightChild.getKey().isSmaller(minimalRunner.getKey()))
                     minimalRunner = node.rightChild;
+            }
+            else if (node.rightChild.getMinimalRunTime() < minimalRunner.getMinimalRunTime())
+                    minimalRunner = node.rightChild;
+        }
         return minimalRunner;
     }
     /**
@@ -371,11 +373,13 @@ public class TwoThreeTree<T extends RunnerID> {
             minimalAvgRunner = node.leftChild;
         else minimalAvgRunner = node.middleChild;
         if (node.rightChild != null)
-            if(node.rightChild.getAvgRunTime()== minimalAvgRunner.getAvgRunTime())
-                if(node.rightChild.getKey().isSmaller(minimalAvgRunner.getKey()))
-                    minimalAvgRunner =node.rightChild;
+            if(node.rightChild.getAvgRunTime()== minimalAvgRunner.getAvgRunTime()) {
+                if (node.rightChild.getKey().isSmaller(minimalAvgRunner.getKey())) {
+                    minimalAvgRunner = node.rightChild;
+                }
                 else if (node.rightChild.getAvgRunTime() < minimalAvgRunner.getAvgRunTime())
                     minimalAvgRunner = node.rightChild;
+            }
         return minimalAvgRunner;
     }
 
@@ -394,13 +398,24 @@ public class TwoThreeTree<T extends RunnerID> {
         return rank;
     }
 
+    /**
+     * a function in order to update the IDTree afte add/delete run from runner.called only from the race
+     * @param node the runner we updated
+     */
+    public void updateWhen_Add_Or_Delete_Run(Node<T> node){
+        Node<T> parent=node.getParent();
+        while(parent!=null){
+            updateNodeRunners(parent);
+            parent=parent.parent;
+        }
+    }
+    public void printTree(){
+        recursivePrint(this.root);
+    }
     private void recursivePrint(Node<T> node){
         if (node.getLeftChild() == null){System.out.print(node.getKey() + " "); return;}
         recursivePrint(node.getLeftChild());
         if(node.getMiddleChild() !=null){recursivePrint(node.getMiddleChild());}
         if(node.getRightChild() !=null){recursivePrint(node.getRightChild());}
-    }
-    public void printTree(){
-        recursivePrint(this.root);
     }
 }

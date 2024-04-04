@@ -67,6 +67,9 @@ public class Node<T extends RunnerID> {
         this.runs = new TimeTree();
         this.MinimalRunTime = Float.MAX_VALUE;
         this.AvgRunTime = Float.MAX_VALUE;
+        this.FastestRunnerMin=this.key;
+        this.FastestRunnerAvg=this.key;
+
     }
 
     /**
@@ -100,6 +103,8 @@ public class Node<T extends RunnerID> {
         this.key = key;
         this.MinimalRunTime = Float.MAX_VALUE;
         this.AvgRunTime = Float.MAX_VALUE;
+        this.FastestRunnerMin=this.key;
+        this.FastestRunnerAvg=this.key;
     }
 
 

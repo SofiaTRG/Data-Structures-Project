@@ -38,6 +38,7 @@ public class Race {
             temp.getRuns().Insert(new Run(time));
             temp.calculateMin();
             temp.calculateAverage(time);
+            RaceTree.updateWhen_Add_Or_Delete_Run(temp);
             // delete the id in min and avg trees and insert again
             // (the min and avg can be changed when we put new times)
             // we find the ids by their previous keys
@@ -68,6 +69,7 @@ public class Race {
                 temp.getRuns().Delete(runTemp);
                 temp.calculateMin();
                 temp.calculateAverageAfterDelete(time);
+                RaceTree.updateWhen_Add_Or_Delete_Run(temp);
                 // delete the id in min and avg trees and insert again
                 // (the min and avg can be changed when we put new times)
                 // we find the ids by their previous keys
