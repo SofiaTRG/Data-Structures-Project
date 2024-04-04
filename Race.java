@@ -123,7 +123,7 @@ public class Race {
             NodeFloat tempFloat = AVGTree.findNode(AVGTree.getRoot(), tempAVG);
             Node <RunnerID> tempRoot = tempFloat.getTree().getRoot();;
             Node <RunnerID> tempID = tempFloat.getTree().Search(tempRoot, id);
-            return AVGTree.Rank(tempFloat) + tempFloat.getTree().Rank(tempID);
+            return AVGTree.Rank(tempFloat) - tempFloat.getTree().Rank(tempID) + 1;
         }
         return 0; //TODO: ERROR MASSAGE NO SUCH ID
     }
@@ -136,7 +136,7 @@ public class Race {
             NodeFloat tempFloat = minTree.findNode(minTree.getRoot(), tempMIN);
             Node <RunnerID> tempRoot = tempFloat.getTree().getRoot();;
             Node <RunnerID> tempID = tempFloat.getTree().Search(tempRoot, id);
-            return minTree.Rank(tempFloat) + tempFloat.getTree().Rank(tempID);
+            return minTree.Rank(tempFloat) - tempFloat.getTree().Rank(tempID) + 1;
         }
         return 0; //TODO: ERROR MASSAGE NO SUCH ID
     }
