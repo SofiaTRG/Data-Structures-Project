@@ -130,20 +130,28 @@ public class TwoThreeTree<T extends RunnerID> {
             return;
         }
         Node<T> y = root;
-        while (y.leftChild != null )//while y is not a leaf
+        boolean flag=true;
+        while (y.leftChild != null && flag ) {//while y is not a leaf
             if (node.getKey().isSmaller(y.leftChild.getKey()))
                 y = y.leftChild;
             else if (node.getKey().isSmaller(y.middleChild.getKey()))
                 y = y.middleChild;
-            else y = y.rightChild;
-
-        Node<T> x = y.parent;
+            else if (y.rightChild != null)
+                y = y.rightChild;
+            else flag=false;
+        }
+        Node<T> x;
+        if(y!=this.root)
+            x = y.parent;
+        else x=this.root;
         Node<T> z = Insert_And_Split(x, node);
         while (x != root) {
             x = x.parent;
             if (z != null)
                 z = Insert_And_Split(x, z);
-            else UpdateKey(x);
+            else {
+                UpdateKey(x);
+                updateNodeRunners(x);} ///update total min and avg
         }
         if (z != null) {
             Node<T> w = new Node<>();
@@ -163,6 +171,7 @@ public class TwoThreeTree<T extends RunnerID> {
             root.leftChild = node;
             node.setParent(root);
             UpdateKey(root);
+            updateNodeRunners(root);//total min and max TODO: CHECK
         } else {//else we need to decide who is the left and the right.
             RunnerID leftRunner = root.leftChild.getKey();
             RunnerID middleRunner = node.getKey();
@@ -189,6 +198,9 @@ public class TwoThreeTree<T extends RunnerID> {
      */
     private void deleteNode(Node<T> node) {
         Node<T> parent = node.parent;
+        if(parent==null) {//it happens in case we want to delete the root from deleteLeaf-node is the prev root
+            return;//we handel the pointers outside this function
+        }
         if (node == parent.leftChild) {
             SetChildren(parent, parent.middleChild, parent.rightChild, null);
             return;
@@ -211,7 +223,7 @@ public class TwoThreeTree<T extends RunnerID> {
                 SetChildren(x, x.middleChild.middleChild, x.rightChild, null);
             } else { // can't borrow from middle. pass the problem to higher level
                 SetChildren(x, node.leftChild, x.leftChild, x.middleChild);
-                deleteNode(node);
+                // deleteNode(node);
                 SetChildren(parent, x, parent.rightChild, null);
             }
             return parent;
@@ -222,7 +234,7 @@ public class TwoThreeTree<T extends RunnerID> {
                 SetChildren(x, x.leftChild, x.middleChild, null);
             } else { // can't borrow from middle. pass the issue higher
                 SetChildren(x, x.leftChild, x.middleChild, node.leftChild);
-                deleteNode(node);
+                // deleteNode(node);
                 SetChildren(parent, x, parent.rightChild, null);
             }
             return parent;
@@ -233,7 +245,7 @@ public class TwoThreeTree<T extends RunnerID> {
                 SetChildren(x, x.leftChild, x.middleChild, null);
             } else { // can't borrow from middle. pass the issue higher
                 SetChildren(x, x.leftChild, x.middleChild, node.leftChild);
-                deleteNode(node);
+                //deleteNode(node);
                 SetChildren(parent, parent.leftChild, x, null);
             }
             return parent;
@@ -258,10 +270,15 @@ public class TwoThreeTree<T extends RunnerID> {
         else if (node == parent.middleChild) {
             SetChildren(parent, parent.leftChild, parent.rightChild, null);
         } else SetChildren(parent, parent.leftChild, parent.middleChild, null);
-        deleteNode(node);
+        //deleteNode(node);
+        numberOfLeaves--;
+        if(numberOfLeaves<=1) {
+            isBalanced=false;
+            return; }
         while (parent != null) {
             if (parent.middleChild != null) {
                 UpdateKey(parent);
+                updateNodeRunners(parent);// UPDATE THE TOTAL MIN AND AVG
                 parent = parent.parent;
             } else {
                 if (parent != this.root) {
@@ -269,14 +286,15 @@ public class TwoThreeTree<T extends RunnerID> {
                 } else {
                     this.root = parent.leftChild;
                     parent.leftChild.parent = null;
-                    deleteNode(parent);
+                    //deleteNode(parent);
+                    numberOfLeaves--;
+                    if(numberOfLeaves<=1)
+                        isBalanced=false;
                     return;
                 }
             }
         }
-        numberOfLeaves--;
-        if(numberOfLeaves==1)
-            isBalanced=false;
+        return;
     }
 
     /**
@@ -313,6 +331,8 @@ public class TwoThreeTree<T extends RunnerID> {
     public Node<T> findMinRuner(Node<T> node) { //TODO: FIXES THE CHILDREN PROBLEMS
         Node<T> minimalRunner;
         RunnerID x=node.leftChild.getKey();
+        if(node.middleChild==null)
+            return node.leftChild;
         RunnerID y=node.middleChild.getKey();
 //        RunnerID z=node.rightChild.getKey();
         if(node.leftChild.getMinimalRunTime()==node.middleChild.getMinimalRunTime())
@@ -339,6 +359,8 @@ public class TwoThreeTree<T extends RunnerID> {
     public Node<T> minRunnerAvgRunTime(Node<T> node) {
         Node<T> minimalAvgRunner;
         RunnerID x=node.leftChild.getKey();
+        if(node.middleChild==null)
+            return node.leftChild;
         RunnerID y=node.middleChild.getKey();
 //        RunnerID z=node.rightChild.getKey();
         if(node.leftChild.getAvgRunTime()==node.middleChild.getAvgRunTime())
@@ -371,8 +393,14 @@ public class TwoThreeTree<T extends RunnerID> {
         }
         return rank;
     }
+
+    private void recursivePrint(Node<T> node){
+        if (node.getLeftChild() == null){System.out.print(node.getKey() + " "); return;}
+        recursivePrint(node.getLeftChild());
+        if(node.getMiddleChild() !=null){recursivePrint(node.getMiddleChild());}
+        if(node.getRightChild() !=null){recursivePrint(node.getRightChild());}
+    }
+    public void printTree(){
+        recursivePrint(this.root);
+    }
 }
-
-
-
-

@@ -65,6 +65,8 @@ public class Node<T extends RunnerID> {
         this.secondKey = secondKey;
         this.numRuns = 0;
         this.runs = new TimeTree();
+        this.MinimalRunTime = Float.MAX_VALUE;
+        this.AvgRunTime = Float.MAX_VALUE;
     }
 
     /**
@@ -96,6 +98,8 @@ public class Node<T extends RunnerID> {
     public Node(T key) { // TODO: CHECK
         this.runs = new TimeTree();
         this.key = key;
+        this.MinimalRunTime = Float.MAX_VALUE;
+        this.AvgRunTime = Float.MAX_VALUE;
     }
 
 
@@ -165,6 +169,7 @@ public class Node<T extends RunnerID> {
     }
 
     public void calculateAverage(float time) {
+        if (AvgRunTime == Float.MAX_VALUE) this.setAvgRunTime((float) 0.0);
         this.AvgRunTime =  ((AvgRunTime * numRuns) + time) / (numRuns + 1);
         this.numRuns += 1;
     }
@@ -172,6 +177,7 @@ public class Node<T extends RunnerID> {
     public void calculateAverageAfterDelete(float time) {
         this.AvgRunTime = ((AvgRunTime * numRuns) - time) / (numRuns - 1);
         this.numRuns -= 1;
+        if (numRuns == 0) this.setAvgRunTime(Float.MAX_VALUE);
     }
 
     public void calculateMin() {

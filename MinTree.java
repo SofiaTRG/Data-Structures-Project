@@ -4,7 +4,9 @@ public class MinTree {
 
     // Init tree
     public MinTree() {
-        this.root = new NodeFloat(Float.MAX_VALUE, null, new NodeFloat(Float.MIN_VALUE),new NodeFloat(Float.MAX_VALUE), null );
+        NodeFloat maxValue = new NodeFloat(Float.MAX_VALUE);
+        maxValue.setTree(new TwoThreeTree<RunnerID>());
+        this.root = new NodeFloat(Float.MAX_VALUE, null, new NodeFloat(Float.MIN_VALUE),maxValue, null );
         this.root.getLeftChild().setParent(root);
         this.root.getMiddleChild().setParent(root);
         this.root.getLeftChild().setKey(Float.MIN_VALUE);
@@ -301,7 +303,7 @@ public class MinTree {
     public void Delete(RunnerID ID, float key){ //TODO: CHECK IF WORKING// need to verify it supports updating the size value
 //            NodeFloat x= SearchTmin(key,root);
         NodeFloat x= findNode(root, key);
-        if(x!=null){
+        if(x!=null && x.getKey() != Float.MAX_VALUE){
             if(x.getTree().getNumberOfLeaves()<=1) {
                 NodeFloat parent = x.getParent();
                 if (parent.getRightChild() != null) {
@@ -486,98 +488,101 @@ public class MinTree {
         recursivePrint(this.root);
     }
 
-    public static void main(String[] args) {
-        MinTree minTree = new MinTree();
-        System.out.println("Init Tree:");
-        minTree.printTree();
-
-        // Insert some nodes
-        minTree.Insert(new ConcreteRunnerID("Runner1"), 10);
-        minTree.Insert(new ConcreteRunnerID("Runner2"), 15);
-        minTree.Insert(new ConcreteRunnerID("Runner3"), 8);
-
-        System.out.println("Original Tree:");
-        minTree.printTree();
-
-        minTree.Insert(new ConcreteRunnerID("Runner5"), 15);
-        System.out.println("After Adding Runner5 with Time 15 Tree:");
-        minTree.printTree();
-
-        ConcreteRunnerID R = new ConcreteRunnerID("Runner4");
-        minTree.Insert(R, 15);
-        System.out.println("After Adding Runner4 with Time 15 Tree:");
-        minTree.printTree();
-
-
-        // Retrieve a node for testing rank
-        NodeFloat nodeToTest = minTree.findNode(minTree.getRoot(), 8);
-
-        // Check the rank of the node
-        int rank = minTree.Rank(nodeToTest);
-        System.out.println("Rank function test, the test is:");
-        System.out.println(rank);
-
-//        // Expected rank for the node with key 12 is 3
-//        if (rank == 2) {
-//            System.out.println("Rank function test passed!");
+//    public static void main(String[] args) {
+//        MinTree minTree = new MinTree();
+//        System.out.println("Init Tree:");
+//        minTree.printTree();
+//
+//        // Insert some nodes
+//        minTree.Insert(new ConcreteRunnerID("Runner1"), 10);
+//        minTree.Insert(new ConcreteRunnerID("Runner2"), 15);
+//        minTree.Insert(new ConcreteRunnerID("Runner3"), 8);
+//
+//        System.out.println("Original Tree:");
+//        minTree.printTree();
+//
+//        minTree.Insert(new ConcreteRunnerID("Runner5"), 15);
+//        System.out.println("After Adding Runner5 with Time 15 Tree:");
+//        minTree.printTree();
+//
+//        ConcreteRunnerID R = new ConcreteRunnerID("Runner4");
+//        minTree.Insert(R, 15);
+//        System.out.println("After Adding Runner4 with Time 15 Tree:");
+//        minTree.printTree();
+//
+//
+//        NodeFloat testingRank = minTree.findNode(minTree.getRoot(), 15);
+//
+//
+//        // Retrieve a node for testing rank
+//        NodeFloat nodeToTest = minTree.findNode(minTree.getRoot(), 8);
+//
+//        // Check the rank of the node
+//        int rank = minTree.Rank(nodeToTest);
+//        System.out.println("Rank function test, the test is:");
+//        System.out.println(rank);
+//
+////        // Expected rank for the node with key 12 is 3
+////        if (rank == 2) {
+////            System.out.println("Rank function test passed!");
+////        } else {
+////            System.out.println("Rank function test failed!");
+////            System.out.println(rank);
+////        }
+//
+//        // Test search
+//        float searchKey = 10;
+//        NodeFloat result = minTree.findNode(minTree.getRoot(),searchKey);
+//
+//        if (result != null) {
+//            System.out.println("Key " + searchKey + " found in the tree.");
+//            minTree.Delete(result.getTree().getRoot().getKey(), searchKey);
+//            System.out.println("After Deleting 10 Tree:");
+//            minTree.printTree();
 //        } else {
-//            System.out.println("Rank function test failed!");
-//            System.out.println(rank);
+//            System.out.println("Key " + searchKey + " not found in the tree.");
 //        }
+//
+//        if (result != null) {
+//            System.out.println("Key " + searchKey + " found in the tree.");
+//            minTree.Delete(result.getTree().getRoot().getKey(), searchKey);
+//            System.out.println("After Deleting 10 Tree:");
+//            minTree.printTree();
+//        } else {
+//            System.out.println("Key " + searchKey + " not found in the tree.");
+//        }
+//        float searchKey2 = 10;
+//        NodeFloat result2 = minTree.findNode(minTree.getRoot(),searchKey2);
+//
+//        if (result2 != null) {
+//            System.out.println("Key " + searchKey2 + " found in the tree.");
+//        } else {
+//            System.out.println("Key " + searchKey2 + " not found in the tree.");
+//        }
+//
+//        NodeFloat nodeToTest2 = minTree.findNode(minTree.getRoot(), 15);
+//
+//        // Check the rank of the node
+//        int rank2 = minTree.Rank(nodeToTest2);
+//        System.out.println("Rank function test, the test is:");
+//        System.out.println(rank2);
+//
+//        float searchKey3 = 15;
+//        NodeFloat result3 = minTree.findNode(minTree.getRoot(),searchKey3);
+//
+//        if (result3 != null) {
+//            System.out.println("Key " + searchKey3 + " found in the tree.");
+//            Node<RunnerID> test3 = result3.getTree().Search(result3.getTree().getRoot(), R);
+//            minTree.Delete(R, searchKey3);
+//            System.out.println("After Deleting Runner4 Tree:");
+//            minTree.printTree();
+//
+//        } else {
+//            System.out.println("Key " + searchKey3 + " not found in the tree.");
+//        }
+//
+//        // Additional tests and operations can be added based on your implementation
+//    }
 
-        // Test search
-        float searchKey = 10;
-        NodeFloat result = minTree.findNode(minTree.getRoot(),searchKey);
-
-        if (result != null) {
-            System.out.println("Key " + searchKey + " found in the tree.");
-            minTree.Delete(result.getTree().getRoot().getKey(), searchKey);
-            System.out.println("After Deleting 10 Tree:");
-            minTree.printTree();
-        } else {
-            System.out.println("Key " + searchKey + " not found in the tree.");
-        }
-
-        if (result != null) {
-            System.out.println("Key " + searchKey + " found in the tree.");
-            minTree.Delete(result.getTree().getRoot().getKey(), searchKey);
-            System.out.println("After Deleting 10 Tree:");
-            minTree.printTree();
-        } else {
-            System.out.println("Key " + searchKey + " not found in the tree.");
-        }
-        float searchKey2 = 10;
-        NodeFloat result2 = minTree.findNode(minTree.getRoot(),searchKey2);
-
-        if (result2 != null) {
-            System.out.println("Key " + searchKey2 + " found in the tree.");
-        } else {
-            System.out.println("Key " + searchKey2 + " not found in the tree.");
-        }
-
-        NodeFloat nodeToTest2 = minTree.findNode(minTree.getRoot(), 15);
-
-        // Check the rank of the node
-        int rank2 = minTree.Rank(nodeToTest2);
-        System.out.println("Rank function test, the test is:");
-        System.out.println(rank2);
-
-        float searchKey3 = 15;
-        NodeFloat result3 = minTree.findNode(minTree.getRoot(),searchKey3);
-
-        if (result3 != null) {
-            System.out.println("Key " + searchKey3 + " found in the tree.");
-            Node<RunnerID> test3 = result3.getTree().Search(result3.getTree().getRoot(), R);
-            minTree.Delete(R, searchKey3);
-            System.out.println("After Deleting Runner4 Tree:");
-            minTree.printTree();
-
-        } else {
-            System.out.println("Key " + searchKey3 + " not found in the tree.");
-        }
-
-        // Additional tests and operations can be added based on your implementation
-    }
-
-    // Additional tests and operations can be added based on your implementation
+//     Additional tests and operations can be added based on your implementation
 }
