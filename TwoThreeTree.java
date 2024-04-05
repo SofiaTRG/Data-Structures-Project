@@ -304,9 +304,16 @@ public class TwoThreeTree<T extends RunnerID> {
      * @return the node that represents the runner(can be modify to the runner id itseld easily)
      */
     public  Node<T> Search(Node<T> x, T key) {
-        if (x == null) {
+        if (x == null) {//if the tree is empty
             return null;
         }
+        if(!isBalanced)//in case the tree isn't balanced so we have less than 2 children
+            if(x.leftChild==null)
+                return null;
+            else if(!(x.leftChild.getKey().isSmaller(key) || key.isSmaller(x.leftChild.getKey())))
+                return x.leftChild;
+            else return null;
+
         if (x.leftChild == null ) {//means that x is a leaf
             if (!(x.getKey().isSmaller(key)) && !(key.isSmaller(x.getKey())))
                 return x;
