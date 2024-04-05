@@ -56,6 +56,7 @@ public class Node<T extends RunnerID> {
     }
 
     // Constructors
+
     public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, Node<T> rightChild, T key, float secondKey) {
         this.parent = parent;
         this.leftChild = leftChild;
