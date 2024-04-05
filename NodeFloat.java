@@ -1,6 +1,6 @@
 public class NodeFloat {
     private float Key;
-    private TwoThreeTree<RunnerID> tree;
+    private TwoThreeTree<RunnerID> tree=new TwoThreeTree<>();
     NodeFloat parent;
     NodeFloat leftChild;
     NodeFloat middleChild;
@@ -77,6 +77,5 @@ public class NodeFloat {
     public int getSize() {
         return size;
     }
-
 
 }
