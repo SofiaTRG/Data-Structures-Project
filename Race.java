@@ -14,56 +14,60 @@ public class Race {
     }
     public void addRunner(RunnerID id)
     {
-        RaceTree.Insert(new Node<>(id));
-        minTree.Insert(id, Float.MAX_VALUE);
-        AVGTree.Insert(id, Float.MAX_VALUE);
+        Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
+        if(temp==null) {// it means it is a new runner and is not already exist
+            RaceTree.Insert(new Node<>(id));
+            minTree.Insert(id, Float.MAX_VALUE);
+            AVGTree.Insert(id, Float.MAX_VALUE);
+        }else throw new IllegalArgumentException();
     }
 
     public void removeRunner(RunnerID id)
     {
         Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
-        if (temp!=null) {
+        if (temp!=null) {//it means the runner is already exists in the race
             RaceTree.DeleteLeaf(temp);
             minTree.Delete(id, temp.getMinimalRunTime());
             AVGTree.Delete(id, temp.getAvgRunTime());
-        } //TODO: ERROR MASSAGE NOT SUCH ID
+        } else throw new IllegalArgumentException();
     }
 
     public void addRunToRunner(RunnerID id, float time)
     {
         Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
-        if (temp!=null) {
-            float Pmin = temp.getMinimalRunTime();
-            float PAVG = temp.getAvgRunTime();
-            temp.getRuns().Insert(new Run(time));
-            temp.calculateMin();
-            temp.calculateAverage(time);
-            RaceTree.updateWhen_Add_Or_Delete_Run(temp);
-            // delete the id in min and avg trees and insert again
-            // (the min and avg can be changed when we put new times)
-            // we find the ids by their previous keys
-            minTree.Delete(id, Pmin);
-            minTree.Insert(id, temp.getMinimalRunTime());
-            AVGTree.Delete(id, PAVG);
-            AVGTree.Insert(id, temp.getAvgRunTime());
+        if (temp!=null) {// it means that the runner is already exists in the race
+            Run runTemp = temp.getRuns().findNode(temp.getRuns().getRoot(), time);
+            if (runTemp==null) {//it means that it is a new run we add to the runner and isnt already exists
+                float Pmin = temp.getMinimalRunTime();
+                float PAVG = temp.getAvgRunTime();
+                temp.getRuns().Insert(new Run(time));
+                temp.calculateMin();
+                temp.calculateAverage(time);
+                RaceTree.updateWhen_Add_Or_Delete_Run(temp);
+                // delete the id in min and avg trees and insert again
+                // (the min and avg can be changed when we put new times)
+                // we find the ids by their previous keys
+                minTree.Delete(id, Pmin);
+                minTree.Insert(id, temp.getMinimalRunTime());
+                AVGTree.Delete(id, PAVG);
+                AVGTree.Insert(id, temp.getAvgRunTime());
 
-            // find the leaves in min and AVG tree
-            NodeFloat newMIN = minTree.findNode(minTree.getRoot(), temp.getMinimalRunTime());
-            NodeFloat newAVG = AVGTree.findNode(AVGTree.getRoot(), temp.getAvgRunTime());
+                // find the leaves in min and AVG tree
+                NodeFloat newMIN = minTree.findNode(minTree.getRoot(), temp.getMinimalRunTime());
+                NodeFloat newAVG = AVGTree.findNode(AVGTree.getRoot(), temp.getAvgRunTime());
 
-            // update the sizes of ancestors
-            minTree.updateSizeFathers(newMIN);
-            AVGTree.updateSizeFathers(newAVG);
-        }
-        //TODO: ERROR MASSAGE NO SUCH ID
+                // update the sizes of ancestors
+                minTree.updateSizeFathers(newMIN);
+                AVGTree.updateSizeFathers(newAVG);
+            }else throw new IllegalArgumentException();
+        }else throw new IllegalArgumentException();
     }
 
-    public void removeRunFromRunner(RunnerID id, float time)
-    {
+    public void removeRunFromRunner(RunnerID id, float time) {
         Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
-        if (temp!=null) {
+        if (temp!=null) {// it means that the runner is already exists in the race
             Run runTemp = temp.getRuns().findNode(temp.getRuns().getRoot(), time);
-            if (runTemp!=null) { //TODO: SHOULD WE DELETE RUNNER WHEN WE DELETED HIS LAST RUN???
+            if (runTemp!=null) {// it means we are trying to remove a run that exists
                 float Pmin = temp.getMinimalRunTime();
                 float PAVG = temp.getAvgRunTime();
                 temp.getRuns().Delete(runTemp);
@@ -97,26 +101,31 @@ public class Race {
                 minTree.updateSizeFathers(newMIN);
                 AVGTree.updateSizeFathers(newAVG);
 
-            } //TODO: ERROR MASSAGE RUN NOT FOUND
+            } else throw new IllegalArgumentException();
 
-        }
-        //TODO: ERROR MASSAGE
+        } else throw new IllegalArgumentException();
     }
 
 
     public RunnerID getFastestRunnerAvg()
     {
-        return RaceTree.getRoot().getFastestRunnerAvg();
+        if(RaceTree.getNumberOfLeaves()==0)// it means that the race is empty
+            throw new IllegalArgumentException();
+        else return RaceTree.getRoot().getFastestRunnerAvg();
 
     }
 
     public RunnerID getFastestRunnerMin()
     {
-        return RaceTree.getRoot().getFastestRunnerMin();
+        if(RaceTree.getNumberOfLeaves()==0)// it means that the race is empty
+            throw new IllegalArgumentException();
+        else return RaceTree.getRoot().getFastestRunnerMin();
     }
 
     public float getMinRun(RunnerID id)
     {
+        if(RaceTree.getNumberOfLeaves()==0)// it means that the race is empty
+            throw new IllegalArgumentException();
         // find the node of runner in ID tree, then get his min time
         Node <RunnerID> tempRoot = RaceTree.getRoot();
         Node <RunnerID> tempNode = RaceTree.Search(tempRoot, id);
@@ -124,12 +133,16 @@ public class Race {
 //        return RaceTree.Search(RaceTree.getRoot(), id).getMinimalRunTime();
     }
     public float getAvgRun(RunnerID id) {
+        if(RaceTree.getNumberOfLeaves()==0)// it means that the race is empty
+            throw new IllegalArgumentException();
         // find the node of runner in ID tree, then get his ang time
         return RaceTree.Search(RaceTree.getRoot(), id).getAvgRunTime();
     }
 
     public int getRankAvg(RunnerID id)
     {
+        if(RaceTree.getNumberOfLeaves()==0)// it means that the race is empty
+            throw new IllegalArgumentException();
         Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
         if (temp!=null) {
             float tempAVG = temp.getAvgRunTime();
@@ -137,12 +150,13 @@ public class Race {
             Node <RunnerID> tempRoot = tempFloat.getTree().getRoot();;
             Node <RunnerID> tempID = tempFloat.getTree().Search(tempRoot, id);
             return AVGTree.Rank(tempFloat) - tempFloat.getTree().Rank(tempID) + 1;
-        }
-        return 0; //TODO: ERROR MASSAGE NO SUCH ID
+        }else throw new IllegalArgumentException();
     }
 
     public int getRankMin(RunnerID id)
     {
+        if(RaceTree.getNumberOfLeaves()==0)// it means that the race is empty
+            throw new IllegalArgumentException();
         Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
         if (temp!=null) {
             float tempMIN = temp.getMinimalRunTime();
@@ -150,7 +164,6 @@ public class Race {
             Node <RunnerID> tempRoot = tempFloat.getTree().getRoot();
             Node <RunnerID> tempID = tempFloat.getTree().Search(tempRoot, id);
             return minTree.Rank(tempFloat) + tempFloat.getTree().Rank(tempID) ;
-        }
-        return 0; //TODO: ERROR MASSAGE NO SUCH ID
+        }throw new IllegalArgumentException();
     }
 }
