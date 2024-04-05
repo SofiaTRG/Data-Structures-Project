@@ -1,16 +1,16 @@
-public class Node<T extends RunnerID> {
-    Node<T> parent;
-    Node<T> leftChild;
-    Node<T> middleChild;
-    Node<T> rightChild;
-    T key;
+public class Node {
+    Node parent;
+    Node leftChild;
+    Node middleChild;
+    Node rightChild;
+    RunnerID key;
     //second key is float
     float secondKey;
-    T value; // Runner or Run(???)
+    RunnerID value; // Runner or Run(???)
     int height;
-    private T FastestRunnerAvg;//pointer to the runner with the minimal avg run time
+    private RunnerID FastestRunnerAvg;//pointer to the runner with the minimal avg run time
 
-    private T FastestRunnerMin;//pointer to the runner with the minimal run time
+    private RunnerID FastestRunnerMin;//pointer to the runner with the minimal run time
 
     private int size;// number of children
     private TimeTree runs;
@@ -19,11 +19,11 @@ public class Node<T extends RunnerID> {
     private int numRuns;
     private int sizeRank = 0; // FOR THE RANK IN ID TREE
 
-    public T getFastestRunnerAvg() {
+    public RunnerID getFastestRunnerAvg() {
         return FastestRunnerAvg;
     }
 
-    public T getFastestRunnerMin() {
+    public RunnerID getFastestRunnerMin() {
         return FastestRunnerMin;
     }
 
@@ -39,11 +39,11 @@ public class Node<T extends RunnerID> {
         return AvgRunTime;
     }
 
-    public void setFastestRunnerAvg(T fastestRunnerAvg) {
+    public void setFastestRunnerAvg(RunnerID fastestRunnerAvg) {
         FastestRunnerAvg = fastestRunnerAvg;
     }
 
-    public void setFastestRunnerMin(T fastestRunnerMin) {
+    public void setFastestRunnerMin(RunnerID fastestRunnerMin) {
         FastestRunnerMin = fastestRunnerMin;
     }
 
@@ -57,7 +57,7 @@ public class Node<T extends RunnerID> {
 
     // Constructors
 
-    public Node(Node<T> parent, Node<T> leftChild, Node<T> middleChild, Node<T> rightChild, T key, float secondKey) {
+    public Node(Node parent, Node leftChild, Node middleChild, Node rightChild, RunnerID key, float secondKey) {
         this.parent = parent;
         this.leftChild = leftChild;
         this.middleChild = middleChild;
@@ -87,7 +87,7 @@ public class Node<T extends RunnerID> {
 
 
 
-    public Node(T key, float secondKey) {
+    public Node(RunnerID key, float secondKey) {
         this(null, null, null, null, key, secondKey);
     }
 
@@ -99,7 +99,7 @@ public class Node<T extends RunnerID> {
         this(null, null, null, null, null, Float.MIN_VALUE);
     }
 
-    public Node(T key) { // TODO: CHECK
+    public Node(RunnerID key) { // TODO: CHECK
         this.runs = new TimeTree();
         this.key = key;
         this.MinimalRunTime = Float.MAX_VALUE;
@@ -110,43 +110,43 @@ public class Node<T extends RunnerID> {
 
 
     // Getters and Setters
-    public Node<T> getParent() {
+    public Node getParent() {
         return parent;
     }
 
-    public void setParent(Node<T> parent) {
+    public void setParent(Node parent) {
         this.parent = parent;
     }
 
-    public Node<T> getLeftChild() {
+    public Node getLeftChild() {
         return leftChild;
     }
 
-    public void setLeftChild(Node<T> leftChild) {
+    public void setLeftChild(Node leftChild) {
         this.leftChild = leftChild;
     }
 
-    public Node<T> getMiddleChild() {
+    public Node getMiddleChild() {
         return middleChild;
     }
 
-    public void setMiddleChild(Node<T> middleChild) {
+    public void setMiddleChild(Node middleChild) {
         this.middleChild = middleChild;
     }
 
-    public Node<T> getRightChild() {
+    public Node getRightChild() {
         return rightChild;
     }
 
-    public void setRightChild(Node<T> rightChild) {
+    public void setRightChild(Node rightChild) {
         this.rightChild = rightChild;
     }
 
-    public T getKey() {
+    public RunnerID getKey() {
         return this.key;
     }
 
-    public void setKey(T key) {
+    public void setKey(RunnerID key) {
         this.key = key;
     }
 
@@ -158,11 +158,11 @@ public class Node<T extends RunnerID> {
         this.secondKey = key;
     }
 
-    public T getValue() {
+    public RunnerID getValue() {
         return this.value;
     }
 
-    public void setValue(T key) {
+    public void setValue(RunnerID key) {
         this.value = key;
     }
 
