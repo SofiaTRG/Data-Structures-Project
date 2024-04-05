@@ -388,9 +388,9 @@ public class TwoThreeTree<T extends RunnerID> {
         Node<T> y = x.getParent();
         while (y != null) {
             if (x == y.getMiddleChild()) {
-                rank = rank + y.getLeftChild().getSize();
+                rank = rank + y.getLeftChild().getSizeRank();
             } else if (x == y.getRightChild()) {
-                rank = rank + y.getLeftChild().getSize() +y.getMiddleChild().getSize();
+                rank = rank + y.getLeftChild().getSizeRank() +y.getMiddleChild().getSizeRank();
             }
             x = y;
             y = y.getParent();
