@@ -188,10 +188,8 @@ public class MinTree {
     public void Insert(RunnerID ID, float key){//TODO: check inserting leaves with size=1;
 //            NodeFloat x= SearchTmin(key,root);
         NodeFloat x= findNode(root, key);
-        if(x!=null) {
-            x.getTree().Insert(new Node<>(ID, key));
-//            x.setSize(x.getSize() + 1); // if we add anew runner to already exist time we add to it's size
-        }
+        if(x!=null)
+            x.getTree().Insert(new Node<>(ID,key));
         else {
             if (this.root.getLeftChild() == null) {
                 TwoThreeTree<RunnerID> tree=new TwoThreeTree<RunnerID>();
@@ -344,12 +342,8 @@ public class MinTree {
             }else {
                 TwoThreeTree<RunnerID> temp=x.getTree();
                 Node<RunnerID> y= temp.Search(temp.getRoot(), ID);
-                if (y!=null) {
+                if (y!=null)
                     temp.DeleteLeaf(y);
-                    x.setSize(temp.getNumberOfLeaves()); //check
-                    updateSizeFathers(x);
-                }
-
             }
         }
     }
@@ -436,7 +430,7 @@ public class MinTree {
 
 
     public int Rank(NodeFloat x) {
-        int rank = 1;
+        int rank = 0;
         NodeFloat y = x.getParent();
         while (y != null) {
             if (x == y.getMiddleChild()) {
@@ -473,7 +467,6 @@ public class MinTree {
             parent = parent.getParent();
         }
     }
-
 
     /** Prints functions for testing **/
 
