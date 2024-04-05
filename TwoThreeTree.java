@@ -9,7 +9,6 @@ public class TwoThreeTree<T extends RunnerID> {
      */
 
     public TwoThreeTree() {
-        this.root = new Node<>();
         isBalanced = false;
     }
 
@@ -167,7 +166,8 @@ public class TwoThreeTree<T extends RunnerID> {
      * @param node a new node we want to insert a a leaf
      */
     public void InitInsert(Node<T> node) { //TODO: ADD SIZE CALCULATION
-        if (root.leftChild == null) {//it means that it is the first leaf we insert to the tree
+        if (root== null) {//it means that it is the first leaf we insert to the tree
+            this.root = new Node<>();
             root.leftChild = node;
             node.setParent(root);
             UpdateKey(root);
@@ -262,8 +262,10 @@ public class TwoThreeTree<T extends RunnerID> {
      * @param node
      */
     public void DeleteLeaf(Node<T> node) {
-        if(!isBalanced)
+        if(!isBalanced){
             deleteLast();
+            return;
+        }
         Node<T> parent = node.parent;
         if (node == parent.leftChild)
             SetChildren(parent, parent.middleChild, parent.rightChild, null);
@@ -283,13 +285,10 @@ public class TwoThreeTree<T extends RunnerID> {
             } else {
                 if (parent != this.root) {
                     parent = BorrowOrMerge(parent);
-                } else {
+                } else {//it means we need to delete the root
                     this.root = parent.leftChild;
                     parent.leftChild.parent = null;
                     //deleteNode(parent);
-                    numberOfLeaves--;
-                    if(numberOfLeaves<=1)
-                        isBalanced=false;
                     return;
                 }
             }
