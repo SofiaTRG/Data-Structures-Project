@@ -303,8 +303,8 @@ public class MinTree {
     public void Delete(RunnerID ID, float key){ //TODO: CHECK IF WORKING// need to verify it supports updating the size value
 //            NodeFloat x= SearchTmin(key,root);
         NodeFloat x= findNode(root, key);
-        if(x!=null && x.getKey() != Float.MAX_VALUE){
-            if(x.getTree().getNumberOfLeaves()<=1) {
+        if(x!=null ){
+            if(x.getTree().getNumberOfLeaves()<=1 && x.getKey() != Float.MAX_VALUE ) {
                 NodeFloat parent = x.getParent();
                 if (parent.getRightChild() != null) {
                     if (parent.getLeftChild() == x) {
