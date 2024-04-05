@@ -78,6 +78,17 @@ public class Race {
                 AVGTree.Delete(id, PAVG);
                 AVGTree.Insert(id, temp.getAvgRunTime());
 
+                // find the leaves in min and AVG tree in the prev tree(if we removed run or runner)
+                NodeFloat prevMIN = minTree.findNode(minTree.getRoot(), Pmin);
+                NodeFloat prevAVG = AVGTree.findNode(AVGTree.getRoot(), PAVG);
+
+                // update the sizes of ancestors in the prev tree(if we removed run or runner)
+                if(prevMIN!=null)//maybe we deleted this node!!!
+                  minTree.updateSizeFathers(prevMIN);
+                if(prevAVG!=null)//maybe we deleted this node!!!
+                  AVGTree.updateSizeFathers(prevAVG);
+
+
                 // find the leaves in min and AVG tree
                 NodeFloat newMIN = minTree.findNode(minTree.getRoot(), temp.getMinimalRunTime());
                 NodeFloat newAVG = AVGTree.findNode(AVGTree.getRoot(), temp.getAvgRunTime());
@@ -136,9 +147,9 @@ public class Race {
         if (temp!=null) {
             float tempMIN = temp.getMinimalRunTime();
             NodeFloat tempFloat = minTree.findNode(minTree.getRoot(), tempMIN);
-            Node <RunnerID> tempRoot = tempFloat.getTree().getRoot();;
+            Node <RunnerID> tempRoot = tempFloat.getTree().getRoot();
             Node <RunnerID> tempID = tempFloat.getTree().Search(tempRoot, id);
-            return minTree.Rank(tempFloat) - tempFloat.getTree().Rank(tempID) + 1;
+            return minTree.Rank(tempFloat) + tempFloat.getTree().Rank(tempID) ;
         }
         return 0; //TODO: ERROR MASSAGE NO SUCH ID
     }
