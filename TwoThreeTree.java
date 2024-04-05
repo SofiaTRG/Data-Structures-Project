@@ -313,7 +313,6 @@ public class TwoThreeTree<T extends RunnerID> {
             else if(!(x.leftChild.getKey().isSmaller(key) || key.isSmaller(x.leftChild.getKey())))
                 return x.leftChild;
             else return null;
-
         if (x.leftChild == null ) {//means that x is a leaf
             if (!(x.getKey().isSmaller(key)) && !(key.isSmaller(x.getKey())))
                 return x;
@@ -325,7 +324,9 @@ public class TwoThreeTree<T extends RunnerID> {
         } else if (key.isSmaller(x.middleChild.getKey())
                 || !(x.middleChild.getKey().isSmaller(key) || key.isSmaller(x.middleChild.getKey()))) {
             return Search(x.middleChild, key);
-        } else return Search(x.rightChild, key);
+        } else if(x.rightChild!=null)
+            return Search(x.rightChild, key);
+        else return null;
     }
 
     /**
