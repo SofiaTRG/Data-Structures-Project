@@ -1,41 +1,18 @@
 public class MinTree {
     private NodeFloat root;
-    private float minNodeFloat;
 
     // Init tree
     public MinTree() {
         NodeFloat maxValue = new NodeFloat(Float.MAX_VALUE);
-        maxValue.setTree(new TwoThreeTree<RunnerID>());
+        maxValue.setTree(new TwoThreeTree());
         this.root = new NodeFloat(Float.MAX_VALUE, null, new NodeFloat(Float.MIN_VALUE),maxValue, null );
         this.root.getLeftChild().setParent(root);
         this.root.getMiddleChild().setParent(root);
         this.root.getLeftChild().setKey(Float.MIN_VALUE);
         this.root.getMiddleChild().setKey(Float.MAX_VALUE);
 
-        //minNodeFloat = Float.MAX_VALUE;
     }
 
-    public NodeFloat find(float time) {
-        NodeFloat current = root;
-        while (current != null) {
-            if (current.getKey() == time) {
-                return current;
-            }
-            if (current.getLeftChild()==null) {
-                return null;
-            }
-            else if (time <= current.getLeftChild().getKey()) {
-                current=current.getLeftChild();
-            } else if (time <= current.getMiddleChild().getKey()) {
-                current=current.getMiddleChild();
-            } else {
-                current=current.getRightChild();
-            }
-
-//                current = current.getKey() < time ? current.getRightChild() : current.getLeftChild();
-        }
-        return null; //should return exception?
-    }
 
     public NodeFloat findNode(NodeFloat root, float time) {
         if (root.getLeftChild()== null ) {
@@ -52,12 +29,6 @@ public class MinTree {
 
     public NodeFloat getRoot(){
         return this.root;
-    }
-
-    public boolean isEmpty(){
-        if(this.root.getLeftChild().getKey() == Integer.MIN_VALUE &&
-                this.root.getMiddleChild().getKey() == Integer.MAX_VALUE){return true;}
-        return false;
     }
 
     /**
@@ -185,20 +156,19 @@ public class MinTree {
      * updates the keys throughout the tree after insertion
      * @param
      */
-    public void Insert(RunnerID ID, float key){//TODO: check inserting leaves with size=1;
-//            NodeFloat x= SearchTmin(key,root);
+    public void Insert(RunnerID ID, float key){
         NodeFloat x= findNode(root, key);
-        if(x!=null)
-            x.getTree().Insert(new Node<>(ID,key));
-        else {
-            if (this.root.getLeftChild() == null) {
-                TwoThreeTree<RunnerID> tree=new TwoThreeTree<RunnerID>();
-                tree.Insert(new Node<>(ID));
-                NodeFloat y=new NodeFloat(key,tree);
-                y.setSize(1);//insterting a new leaf with size 1
-                this.root.setLeftChild(y);
-                return;
-            } //in case we have an empty tree
+        if(x!=null) {
+            x.getTree().Insert(new Node(ID));
+        } else {
+            //if (this.root.getLeftChild() == null) {
+            //    TwoThreeTree tree=new TwoThreeTree();
+             //   tree.Insert(new Node(ID));
+             //   NodeFloat y=new NodeFloat(key,tree);
+             //   y.setSize(1);//insterting a new leaf with size 1
+             //   this.root.setLeftChild(y);
+             //   return;
+             //in case we have an empty tree
             NodeFloat temp = this.root;
             while (temp.getLeftChild() != null) { //stop when found a leaf
                 if (key < temp.getLeftChild().getKey()) {
@@ -209,27 +179,24 @@ public class MinTree {
                     temp = temp.getRightChild();
                 }
             }
-
-            NodeFloat parentSave = temp.getParent();//current acecctor that we look at
-            //check (20, inf)
-            TwoThreeTree<RunnerID> tree=new TwoThreeTree<RunnerID>();
-            tree.Insert(new Node<>(ID));
+            NodeFloat parentSave = temp.getParent();//current suceccor that we look at
+            TwoThreeTree tree=new TwoThreeTree();
+            tree.Insert(new Node(ID));
             NodeFloat y=new NodeFloat(key,tree);
             y.setSize(1);//inserting a new leaf with size 1
             NodeFloat newNode = Insert_And_Split(temp, y); // found place in tree - Insert
             while (parentSave != this.root) { //update the keys of the tree
                 temp = parentSave.getParent();
                 if (newNode != null) {
-                    newNode = Insert_And_Split(parentSave, newNode); //????
+                    newNode = Insert_And_Split(parentSave, newNode);
                 }
-                if (newNode==null){// we inserted the new node without split then deg_in(parentsave)==3
-                    parentSave.setSize(parentSave.getSize()+1);//we should update the parent size value by 1
-                }
+                //if (newNode==null){// we inserted the new node without split then deg_in(parentsave)==3
+                    //parentSave.setSize(parentSave.getSize()+1);//we should update the parent size value by 1
                 UpdateKey(parentSave);
                 parentSave = temp;
             }
             if (newNode != null) { //need a new root
-                NodeFloat newRoot = new NodeFloat(0);//TODO:CHECK
+                NodeFloat newRoot = new NodeFloat(0);
                 SetChildren(newRoot, parentSave, newNode, null);
                 int currSize ;
                 currSize=parentSave.getSize()+newNode.getSize();//updating the new root size value if needed
@@ -340,10 +307,12 @@ public class MinTree {
                     parent = parent.getParent();
                 }
             }else {
-                TwoThreeTree<RunnerID> temp=x.getTree();
-                Node<RunnerID> y= temp.Search(temp.getRoot(), ID);
-                if (y!=null)
+                TwoThreeTree temp=x.getTree();
+                Node y= temp.Search(temp.getRoot(), ID);
+                if (y!=null) {
                     temp.DeleteLeaf(y);
+                    updateSizeFathers(x);
+                }
             }
         }
     }
@@ -430,7 +399,7 @@ public class MinTree {
 
 
     public int Rank(NodeFloat x) {
-        int rank = 0;
+        int rank = 1;
         NodeFloat y = x.getParent();
         while (y != null) {
             if (x == y.getMiddleChild()) {
@@ -483,106 +452,4 @@ public class MinTree {
             recursivePrint(node.getRightChild());
         }
     }
-
-    public void printTree() {
-        recursivePrint(this.root);
-    }
-
-//    public static void main(String[] args) {
-//        MinTree minTree = new MinTree();
-//        System.out.println("Init Tree:");
-//        minTree.printTree();
-//
-//        // Insert some nodes
-//        minTree.Insert(new ConcreteRunnerID("Runner1"), 10);
-//        minTree.Insert(new ConcreteRunnerID("Runner2"), 15);
-//        minTree.Insert(new ConcreteRunnerID("Runner3"), 8);
-//
-//        System.out.println("Original Tree:");
-//        minTree.printTree();
-//
-//        minTree.Insert(new ConcreteRunnerID("Runner5"), 15);
-//        System.out.println("After Adding Runner5 with Time 15 Tree:");
-//        minTree.printTree();
-//
-//        ConcreteRunnerID R = new ConcreteRunnerID("Runner4");
-//        minTree.Insert(R, 15);
-//        System.out.println("After Adding Runner4 with Time 15 Tree:");
-//        minTree.printTree();
-//
-//
-//        NodeFloat testingRank = minTree.findNode(minTree.getRoot(), 15);
-//
-//
-//        // Retrieve a node for testing rank
-//        NodeFloat nodeToTest = minTree.findNode(minTree.getRoot(), 8);
-//
-//        // Check the rank of the node
-//        int rank = minTree.Rank(nodeToTest);
-//        System.out.println("Rank function test, the test is:");
-//        System.out.println(rank);
-//
-////        // Expected rank for the node with key 12 is 3
-////        if (rank == 2) {
-////            System.out.println("Rank function test passed!");
-////        } else {
-////            System.out.println("Rank function test failed!");
-////            System.out.println(rank);
-////        }
-//
-//        // Test search
-//        float searchKey = 10;
-//        NodeFloat result = minTree.findNode(minTree.getRoot(),searchKey);
-//
-//        if (result != null) {
-//            System.out.println("Key " + searchKey + " found in the tree.");
-//            minTree.Delete(result.getTree().getRoot().getKey(), searchKey);
-//            System.out.println("After Deleting 10 Tree:");
-//            minTree.printTree();
-//        } else {
-//            System.out.println("Key " + searchKey + " not found in the tree.");
-//        }
-//
-//        if (result != null) {
-//            System.out.println("Key " + searchKey + " found in the tree.");
-//            minTree.Delete(result.getTree().getRoot().getKey(), searchKey);
-//            System.out.println("After Deleting 10 Tree:");
-//            minTree.printTree();
-//        } else {
-//            System.out.println("Key " + searchKey + " not found in the tree.");
-//        }
-//        float searchKey2 = 10;
-//        NodeFloat result2 = minTree.findNode(minTree.getRoot(),searchKey2);
-//
-//        if (result2 != null) {
-//            System.out.println("Key " + searchKey2 + " found in the tree.");
-//        } else {
-//            System.out.println("Key " + searchKey2 + " not found in the tree.");
-//        }
-//
-//        NodeFloat nodeToTest2 = minTree.findNode(minTree.getRoot(), 15);
-//
-//        // Check the rank of the node
-//        int rank2 = minTree.Rank(nodeToTest2);
-//        System.out.println("Rank function test, the test is:");
-//        System.out.println(rank2);
-//
-//        float searchKey3 = 15;
-//        NodeFloat result3 = minTree.findNode(minTree.getRoot(),searchKey3);
-//
-//        if (result3 != null) {
-//            System.out.println("Key " + searchKey3 + " found in the tree.");
-//            Node<RunnerID> test3 = result3.getTree().Search(result3.getTree().getRoot(), R);
-//            minTree.Delete(R, searchKey3);
-//            System.out.println("After Deleting Runner4 Tree:");
-//            minTree.printTree();
-//
-//        } else {
-//            System.out.println("Key " + searchKey3 + " not found in the tree.");
-//        }
-//
-//        // Additional tests and operations can be added based on your implementation
-//    }
-
-//     Additional tests and operations can be added based on your implementation
 }
