@@ -1,13 +1,11 @@
 public class Node {
-    Node parent;
-    Node leftChild;
-    Node middleChild;
-    Node rightChild;
-    RunnerID key;
-    //second key is float
+     Node parent;
+     Node leftChild;
+     Node middleChild;
+     Node rightChild;
+     RunnerID key;
     float secondKey;
-    RunnerID value; // Runner or Run(???)
-    int height;
+
     private RunnerID FastestRunnerAvg;//pointer to the runner with the minimal avg run time
 
     private RunnerID FastestRunnerMin;//pointer to the runner with the minimal run time
@@ -19,6 +17,31 @@ public class Node {
     private int numRuns;
     private int sizeRank = 0; // FOR THE RANK IN ID TREE
 
+    // Constructors
+    public Node(Node parent, Node leftChild, Node middleChild, Node rightChild, RunnerID key) {
+        this.parent = parent;
+        this.leftChild = leftChild;
+        this.middleChild = middleChild;
+        this.rightChild = rightChild; //In TwoThreeTree always null
+        this.key = key;
+        this.numRuns = 0;
+        this.runs = new TimeTree();
+        this.MinimalRunTime = Float.MAX_VALUE;
+        this.AvgRunTime = Float.MAX_VALUE;
+        this.FastestRunnerMin=this.key;
+        this.FastestRunnerAvg=this.key;
+    }
+    public Node() {
+        this(null, null, null, null, null);
+    }
+    public Node(RunnerID key) {
+        this(null,null,null,null,key);
+    }
+
+    // Getters and Setters
+    public TimeTree getRuns() {
+        return runs;
+    }
     public RunnerID getFastestRunnerAvg() {
         return FastestRunnerAvg;
     }
@@ -27,9 +50,6 @@ public class Node {
         return FastestRunnerMin;
     }
 
-    public int getSize() {
-        return size;
-    }
 
     public float getMinimalRunTime() {
         return MinimalRunTime;
@@ -54,74 +74,15 @@ public class Node {
     public void setAvgRunTime(float avgRunTime) {
         AvgRunTime = avgRunTime;
     }
-
-    // Constructors
-
-    public Node(Node parent, Node leftChild, Node middleChild, Node rightChild, RunnerID key, float secondKey) {
-        this.parent = parent;
-        this.leftChild = leftChild;
-        this.middleChild = middleChild;
-        this.rightChild = rightChild; //In TwoThreeTree always null
-        this.key = key;
-        this.secondKey = secondKey;
-        this.numRuns = 0;
-        this.runs = new TimeTree();
-        this.MinimalRunTime = Float.MAX_VALUE;
-        this.AvgRunTime = Float.MAX_VALUE;
-        this.FastestRunnerMin=this.key;
-        this.FastestRunnerAvg=this.key;
-
-    }
-
-    /**
-     * copy consturctor for the MinTree and AvgTree
-     * @param
-     */
-    //public Node(Node<T> nodeToCopy){
-    //   new Node<T>(null, null, null, null, null, nodeToCopy.getKey(), nodeToCopy.getSecondKey());
-    // }
-
-    public TimeTree getRuns() {
-        return runs;
-    }
-
-
-
-    public Node(RunnerID key, float secondKey) {
-        this(null, null, null, null, key, secondKey);
-    }
-
-    //public Node(int key, int secondKey) {
-    //    this(null, null, null, null, null, key, secondKey);
-    //}
-
-    public Node() {
-        this(null, null, null, null, null, Float.MIN_VALUE);
-    }
-
-    public Node(RunnerID key) { // TODO: CHECK
-        this.runs = new TimeTree();
-        this.key = key;
-        this.MinimalRunTime = Float.MAX_VALUE;
-        this.AvgRunTime = Float.MAX_VALUE;
-        this.FastestRunnerMin=this.key;
-        this.FastestRunnerAvg=this.key;
-    }
-
-
-    // Getters and Setters
     public Node getParent() {
         return parent;
     }
-
     public void setParent(Node parent) {
         this.parent = parent;
     }
-
     public Node getLeftChild() {
         return leftChild;
     }
-
     public void setLeftChild(Node leftChild) {
         this.leftChild = leftChild;
     }
@@ -148,22 +109,6 @@ public class Node {
 
     public void setKey(RunnerID key) {
         this.key = key;
-    }
-
-    public float getSecondKey() {
-        return this.secondKey;
-    }
-
-    public void setSecondKey(int key) {
-        this.secondKey = key;
-    }
-
-    public RunnerID getValue() {
-        return this.value;
-    }
-
-    public void setValue(RunnerID key) {
-        this.value = key;
     }
 
     public int getSizeRank() { //FOR RANK IN ID TREE
