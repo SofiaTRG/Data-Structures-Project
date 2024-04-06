@@ -1,6 +1,5 @@
 public class TwoThreeTree {
     private Node root;
-    //private boolean isBalanced;// a flag indicates the tree is 2-3 TREE
     private int numberOfLeaves ;
 
     /**
@@ -56,15 +55,13 @@ public class TwoThreeTree {
      */
     // make a same function to min key
     private void UpdateKey(Node parent) {
-        if (parent.middleChild == null) {
+        if (parent.getMiddleChild() == null) {
             parent.key = parent.leftChild.key;
-            parent.secondKey = parent.leftChild.secondKey;
             parent.setSizeRank(parent.getLeftChild().getSizeRank()); // FOR RANK FUNCTION
             return;
         } //assuming we call the function not on a leaf
         if (parent.rightChild == null) {
             parent.key = parent.middleChild.key;
-            parent.secondKey = parent.middleChild.secondKey;
             parent.setSizeRank(parent.getLeftChild().getSizeRank()+parent.getMiddleChild().getSizeRank()); // FOR RANK FUNCTION
             return;
         }
@@ -76,7 +73,6 @@ public class TwoThreeTree {
 
     /**
      * set the children received as parameters to be children of the parent(also parameter) in order
-     *
      * @param parent
      * @param left
      * @param middle
@@ -105,7 +101,7 @@ public class TwoThreeTree {
         parent.setFastestRunnerMin(fastestRunner.getFastestRunnerMin());
         parent.setFastestRunnerAvg(fastestAvgRunner.getFastestRunnerAvg());
         parent.setMinimalRunTime(fastestRunner.getMinimalRunTime());
-        parent.setAvgRunTime(fastestRunner.getAvgRunTime());
+        parent.setAvgRunTime(fastestAvgRunner.getAvgRunTime());
     }
     /**
      * activated after the node's destination is found
@@ -175,7 +171,7 @@ public class TwoThreeTree {
                 z = Insert_And_Split(x, z);
             else {
                 UpdateKey(x);
-                updateNodeRunners(x);} ///update total min and avg
+                updateNodeRunners(x);}///update total min and avg
         }
         if (z != null) {
             Node w = new Node();
@@ -186,56 +182,9 @@ public class TwoThreeTree {
     }
 
     /**
-     * first insertion if the tree has less than 2 leaves
-     *
-     * @param node a new node we want to insert a a leaf
-     */
-    public void InitInsert(Node node) { //TODO: ADD SIZE CALCULATION
-        if (root.leftChild== null) {//it means that it is the first leaf we insert to the tree
-            root.leftChild = node;
-            node.setParent(root);
-            UpdateKey(root);
-            updateNodeRunners(root);//total min and max TODO: CHECK
-        } else {//else we need to decide who is the left and the right.
-            RunnerID leftRunner = root.leftChild.getKey();
-            RunnerID middleRunner = node.getKey();
-            if (leftRunner.isSmaller(middleRunner)) {
-                root.middleChild = node;
-                node.setParent(root);
-                UpdateKey(root);
-                updateNodeRunners(root);
-            } else {
-                root.middleChild = root.leftChild;
-                root.leftChild = node;
-                node.setParent(root);
-                UpdateKey(root);
-                updateNodeRunners(root);
-            }
-            //isBalanced = true;
-        }
-        numberOfLeaves++;
-    }
-
-    /**
      * removes a node from the tree - removes link to the parent and link from the parent
      * @param node
      */
-    private void deleteNode(Node node) {
-        Node parent = node.parent;
-        if(parent==null) {//it happens in case we want to delete the root from deleteLeaf-node is the prev root
-            return;//we handel the pointers outside this function
-        }
-        if (node == parent.leftChild) {
-            SetChildren(parent, parent.middleChild, parent.rightChild, null);
-            return;
-        }
-        if (node == parent.middleChild) {
-            SetChildren(parent, parent.leftChild, parent.rightChild, null);
-            return;
-        }
-        SetChildren(parent, parent.leftChild, parent.middleChild, null);
-    }
-
 
     private Node BorrowOrMerge(Node node) {
         Node parent = node.parent;
@@ -276,20 +225,12 @@ public class TwoThreeTree {
         }
     }
 
-    public void deleteLast(){
-        numberOfLeaves--;
-        this.root=null;//it means that we removed the last node in the tree and because of that the root points to null
-    }
     /**
      * working under the assumption that only leaves are getting deleted
      *
      * @param node
      */
     public void DeleteLeaf(Node node) {
-        //if(!isBalanced){
-           // deleteLast();
-            //return;
-        //}
         Node parent = node.getParent();
         if (node == parent.leftChild)
             SetChildren(parent, parent.middleChild, parent.rightChild, null);
@@ -319,7 +260,7 @@ public class TwoThreeTree {
     /**
      * search a runner in the tree
      *
-     * @param x   the root of the tree
+     * @param x  the root of the tree
      * @param key the key we eat to find
      * @return the node that represents the runner(can be modify to the runner id itseld easily)
      */
@@ -360,7 +301,7 @@ public class TwoThreeTree {
         RunnerID y=node.middleChild.getKey();
 //        RunnerID z=node.rightChild.getKey();
         if(node.leftChild.getMinimalRunTime()==node.middleChild.getMinimalRunTime())
-            if(variantIsSmaller(x,y))
+            if(variantIsSmaller(x,y) && !(x instanceof minusInf))
                 minimalRunner=node.leftChild;
             else minimalRunner=node.middleChild;
         else if (node.leftChild.getMinimalRunTime() < node.middleChild.getMinimalRunTime())
@@ -368,7 +309,7 @@ public class TwoThreeTree {
         else minimalRunner = node.middleChild;
         if (node.rightChild != null){
             if(node.rightChild.getMinimalRunTime()==minimalRunner.getMinimalRunTime()) {
-                if (variantIsSmaller(node.rightChild.getKey(),minimalRunner.getKey()))
+                if (variantIsSmaller(node.rightChild.getKey(),minimalRunner.getKey()) && !(node.rightChild.getKey() instanceof minusInf))
                     minimalRunner = node.rightChild;
             }
             else if (node.rightChild.getMinimalRunTime() < minimalRunner.getMinimalRunTime())
@@ -390,7 +331,7 @@ public class TwoThreeTree {
         RunnerID y=node.middleChild.getKey();
 //        RunnerID z=node.rightChild.getKey();
         if(node.leftChild.getAvgRunTime()==node.middleChild.getAvgRunTime())
-            if(variantIsSmaller(x,y))
+            if(variantIsSmaller(x,y) && !(x instanceof minusInf))
                 minimalAvgRunner =node.leftChild;
             else minimalAvgRunner =node.middleChild;
         else if (node.leftChild.getAvgRunTime() < node.middleChild.getAvgRunTime())
@@ -398,7 +339,7 @@ public class TwoThreeTree {
         else minimalAvgRunner = node.middleChild;
         if (node.rightChild != null){
             if(node.rightChild.getAvgRunTime()== minimalAvgRunner.getAvgRunTime()) {
-                if (variantIsSmaller(minimalAvgRunner.getKey(),node.rightChild.getKey())) {
+                if (variantIsSmaller(node.rightChild.getKey(),minimalAvgRunner.getKey()) && !(node.rightChild.getKey() instanceof minusInf)) {
                     minimalAvgRunner = node.rightChild;
                 }
                 else if (node.rightChild.getAvgRunTime() < minimalAvgRunner.getAvgRunTime())
@@ -424,7 +365,8 @@ public class TwoThreeTree {
     }
 
     /**
-     * a function in order to update the IDTree afte add/delete run from runner.called only from the race
+     * a function in order to update the IDTree (all the runners anccestors)
+     * after add/delete run from runner.called only from the race
      * @param node the runner we updated
      */
     public void updateWhen_Add_Or_Delete_Run(Node node){
