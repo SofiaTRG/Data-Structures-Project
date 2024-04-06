@@ -1,10 +1,10 @@
 public class NodeFloat {
     private float Key;
-    private TwoThreeTree<RunnerID> tree=new TwoThreeTree<>();
-    NodeFloat parent;
-    NodeFloat leftChild;
-    NodeFloat middleChild;
-    NodeFloat rightChild;
+    private TwoThreeTree tree=new TwoThreeTree();
+    private NodeFloat parent;
+    private NodeFloat leftChild;
+    private NodeFloat middleChild;
+    private NodeFloat rightChild;
     private int size=0;//**
 
     public NodeFloat(float key, NodeFloat parent, NodeFloat leftChild, NodeFloat middleChild, NodeFloat rightChild) {
@@ -17,7 +17,7 @@ public class NodeFloat {
     public NodeFloat(float key) {
         new NodeFloat(key,null,null,null,null);}
 
-    public NodeFloat(float key, TwoThreeTree<RunnerID> tree) {
+    public NodeFloat(float key, TwoThreeTree tree) {
         Key = key;
         this.tree = tree;
     }
@@ -26,7 +26,7 @@ public class NodeFloat {
         return Key;
     }
 
-    public TwoThreeTree<RunnerID> getTree() {
+    public TwoThreeTree getTree() {
         return tree;
     }
 
@@ -50,7 +50,7 @@ public class NodeFloat {
         Key = key;
     }
 
-    public void setTree(TwoThreeTree<RunnerID> tree) {
+    public void setTree(TwoThreeTree tree) {
         this.tree = tree;
     }
 
