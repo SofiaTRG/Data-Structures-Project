@@ -1,30 +1,35 @@
 public class Race {
-    TwoThreeTree<RunnerID> RaceTree;
-    MinTree minTree;
-    MinTree AVGTree;
+     TwoThreeTree RaceTree;
+     MinTree minTree;
+     MinTree AVGTree;
 
     public Race() {
         init();
     }
     public void init()
     {
-        RaceTree = new TwoThreeTree<>();
+        RaceTree = new TwoThreeTree();
         minTree = new MinTree();
         AVGTree = new MinTree();
     }
     public void addRunner(RunnerID id)
     {
-        Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
+        if(id==null)
+            throw new IllegalArgumentException();
+        Node temp = RaceTree.Search(RaceTree.getRoot(), id);
         if(temp==null) {// it means it is a new runner and is not already exist
-            RaceTree.Insert(new Node<>(id));
+            Node temp2=new Node(id);
+            RaceTree.Insert(temp2);
+            RaceTree.updateWhen_Add_Or_Delete_Run(temp2);//update the Race ID tree after changing runner
             minTree.Insert(id, Float.MAX_VALUE);
             AVGTree.Insert(id, Float.MAX_VALUE);
         }else throw new IllegalArgumentException();
     }
 
-    public void removeRunner(RunnerID id)
-    {
-        Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
+    public void removeRunner(RunnerID id) {
+        if(id==null)
+            throw new IllegalArgumentException();
+        Node temp = RaceTree.Search(RaceTree.getRoot(), id);
         if (temp!=null) {//it means the runner is already exists in the race
             RaceTree.DeleteLeaf(temp);
             minTree.Delete(id, temp.getMinimalRunTime());
@@ -32,9 +37,8 @@ public class Race {
         } else throw new IllegalArgumentException();
     }
 
-    public void addRunToRunner(RunnerID id, float time)
-    {
-        Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
+    public void addRunToRunner(RunnerID id, float time) {
+        Node temp = RaceTree.Search(RaceTree.getRoot(), id);
         if (temp!=null) {// it means that the runner is already exists in the race
             Run runTemp = temp.getRuns().findNode(temp.getRuns().getRoot(), time);
             if (runTemp==null) {//it means that it is a new run we add to the runner and isnt already exists
@@ -43,7 +47,7 @@ public class Race {
                 temp.getRuns().Insert(new Run(time));
                 temp.calculateMin();
                 temp.calculateAverage(time);
-                RaceTree.updateWhen_Add_Or_Delete_Run(temp);
+                RaceTree.updateWhen_Add_Or_Delete_Run(temp);//update the Race ID tree after changing runner
                 // delete the id in min and avg trees and insert again
                 // (the min and avg can be changed when we put new times)
                 // we find the ids by their previous keys
@@ -64,7 +68,7 @@ public class Race {
     }
 
     public void removeRunFromRunner(RunnerID id, float time) {
-        Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
+        Node temp = RaceTree.Search(RaceTree.getRoot(), id);
         if (temp!=null) {// it means that the runner is already exists in the race
             Run runTemp = temp.getRuns().findNode(temp.getRuns().getRoot(), time);
             if (runTemp!=null) {// it means we are trying to remove a run that exists
@@ -73,7 +77,7 @@ public class Race {
                 temp.getRuns().Delete(runTemp);
                 temp.calculateMin();
                 temp.calculateAverageAfterDelete(time);
-                RaceTree.updateWhen_Add_Or_Delete_Run(temp);
+                RaceTree.updateWhen_Add_Or_Delete_Run(temp);//update the Race ID tree after changing runner
                 // delete the id in min and avg trees and insert again
                 // (the min and avg can be changed when we put new times)
                 // we find the ids by their previous keys
@@ -127,10 +131,9 @@ public class Race {
         if(RaceTree.getNumberOfLeaves()==0)// it means that the race is empty
             throw new IllegalArgumentException();
         // find the node of runner in ID tree, then get his min time
-        Node <RunnerID> tempRoot = RaceTree.getRoot();
-        Node <RunnerID> tempNode = RaceTree.Search(tempRoot, id);
+        Node tempRoot = RaceTree.getRoot();
+        Node tempNode = RaceTree.Search(tempRoot, id);
         return tempNode.getMinimalRunTime();
-//        return RaceTree.Search(RaceTree.getRoot(), id).getMinimalRunTime();
     }
     public float getAvgRun(RunnerID id) {
         if(RaceTree.getNumberOfLeaves()==0)// it means that the race is empty
@@ -143,13 +146,13 @@ public class Race {
     {
         if(RaceTree.getNumberOfLeaves()==0)// it means that the race is empty
             throw new IllegalArgumentException();
-        Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
+        Node temp = RaceTree.Search(RaceTree.getRoot(), id);
         if (temp!=null) {
             float tempAVG = temp.getAvgRunTime();
             NodeFloat tempFloat = AVGTree.findNode(AVGTree.getRoot(), tempAVG);
-            Node <RunnerID> tempRoot = tempFloat.getTree().getRoot();;
-            Node <RunnerID> tempID = tempFloat.getTree().Search(tempRoot, id);
-            return AVGTree.Rank(tempFloat) - tempFloat.getTree().Rank(tempID) + 1;
+            Node tempRoot = tempFloat.getTree().getRoot();;
+            Node tempID = tempFloat.getTree().Search(tempRoot, id);
+            return AVGTree.Rank(tempFloat) + tempFloat.getTree().Rank(tempID)-1 ;
         }else throw new IllegalArgumentException();
     }
 
@@ -157,13 +160,13 @@ public class Race {
     {
         if(RaceTree.getNumberOfLeaves()==0)// it means that the race is empty
             throw new IllegalArgumentException();
-        Node<RunnerID> temp = RaceTree.Search(RaceTree.getRoot(), id);
+        Node temp = RaceTree.Search(RaceTree.getRoot(), id);
         if (temp!=null) {
             float tempMIN = temp.getMinimalRunTime();
             NodeFloat tempFloat = minTree.findNode(minTree.getRoot(), tempMIN);
-            Node <RunnerID> tempRoot = tempFloat.getTree().getRoot();
-            Node <RunnerID> tempID = tempFloat.getTree().Search(tempRoot, id);
-            return minTree.Rank(tempFloat) + tempFloat.getTree().Rank(tempID) ;
+            Node tempRoot = tempFloat.getTree().getRoot();
+            Node tempID = tempFloat.getTree().Search(tempRoot, id);
+            return minTree.Rank(tempFloat) + tempFloat.getTree().Rank(tempID) -1;
         }throw new IllegalArgumentException();
     }
 }
